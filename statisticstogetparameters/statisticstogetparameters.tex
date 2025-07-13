@@ -43,15 +43,15 @@ period. In this case it's one period.
 
 Suppose the time involves tick 0 and tick 1,
 between them is the time period.
-the price at tick 0 is $S_0$
+the price at tick 0 is $S^1$
 and at tick 1 the price is a random variable
-$S_1$ which shows by the following chart.
+$S^\lambda$ which shows by the following chart.
 $$
     \begin{array}{c|ccc}
-        variable & up   & down \\
-        S_1      & uS_0 & dS_0 \\
+        variable     & up       & down     \\
+        S^\lambda    & uS^1=S^u & dS^1=S^d \\
         \hline
-        P(S_1)   & p    & 1-p  \\
+        P(S^\lambda) & p        & 1-p      \\
     \end{array}
 $$
 which satisfies $d<1+r<u$ the no-arbitage condition.
@@ -62,10 +62,10 @@ the following chart.
 
 $$
     \begin{array}{c|ccc}
-        asset & tick0 & tick1 \\
-        stock & S_0   & S_1   \\
+        asset & tick0 & tick1     \\
+        stock & S^1   & S^\lambda \\
         \hline
-        bank  & 1     & 1+r   \\
+        bank  & 1     & 1+r       \\
     \end{array}
 $$
 
@@ -77,22 +77,131 @@ $x$ amount of money when tick0
 
 $$
     \begin{array}{c|ccc}
-        asset  & tick0 & tick1 \\
-        stock  & S_0   & S_1   \\
+        asset  & tick0 & tick1     \\
+        stock  & S^1   & S^\lambda \\
         \hline
-        bank   & 1     & 1+r   \\
+        bank   & 1     & 1+r       \\
         \hline
-        option & x     & f     \\
+        option & f^1   & f^\lambda \\
+    \end{array}
+$$
+which $f$ can be also view as a random
+variable which is shown the next chart.
+$$
+    \begin{array}{c|ccc}
+        variable     & up  & down \\
+        f^\lambda    & f^u & f^d  \\
+        \hline
+        P(f^\lambda) & p   & 1-p  \\
+    \end{array}
+$$
+
+we make a portfolio of $\Delta$ units of
+stock and $\Psi$ units of the bank account.
+
+then we want at tick1 we have
+
+$\Delta S^\lambda+\Psi(1+r)=f_\lambda$
+
+this is the equation in a vecotr matrix form.
+
+where
+$f^\lambda=
+    \begin{bmatrix}
+        f_u \\
+        f_d
+    \end{bmatrix}
+$
+and we can denote
+$\Phi^\delta=
+    \begin{bmatrix}
+        \Delta \\
+        \Psi
+    \end{bmatrix}
+$
+and
+$S^\lambda=S^\delta=
+    \begin{bmatrix}
+        uS^1 \\
+        dS^1
+    \end{bmatrix}
+$
+and
+$\Sigma^\lambda_\delta=
+    \begin{bmatrix}
+        S^u & r+1 \\
+        S^d & r+1
+    \end{bmatrix}
+$
+and we can rewrite it as follow
+$\Sigma^\lambda_\delta \Phi^\delta=f^\lambda$
+
+we then denote $\Sigma^k_\delta \Omega_\lambda^\delta=\delta^k_\lambda$
+then
+$\Omega_\lambda^k\Sigma^\lambda_\delta \Phi^\delta=\Omega_\lambda^kf^\lambda$
+then
+$\delta^k_\delta\Phi^\delta=\Omega_\lambda^kf^\lambda$
+then
+$\Phi^k=\Omega_\lambda^kf^\lambda$
+
+And if we denote
+$\sigma^1_k=
+    \begin{bmatrix}
+        S^1 & 1
+    \end{bmatrix}
+$
+then we get
+$f^1=\sigma^1_k\Phi^k=\sigma_k\Omega_\lambda^kf^\lambda$
+
+\subsection{two periods binomial model}
+for one case if we already get to $f^u$
+at tick1, then we now have a price at
+$uS^1$
+$$
+    \begin{array}{c|ccc}
+        variable        & up          & down        \\
+        S^{u\lambda}    & uS^u=S^{uu} & dS^u=S^{ud} \\
+        \hline
+        P(S^{u\lambda}) & p           & 1-p         \\
     \end{array}
 $$
 $$
     \begin{array}{c|ccc}
-        variable & up   & down \\
-        S_1      & uS_0 & dS_0 \\
+        asset  & tick0 & tick1 & tick2        \\
+        stock  & S^1   & S^u   & S^{u\lambda} \\
         \hline
-        P(S_1)   & p    & 1-p  \\
+        bank   & 1     & 1+r   & (1+r)^2      \\
+        \hline
+        option & f^1   & f^u   & f^{u\lambda} \\
     \end{array}
 $$
+where
+$$
+    \begin{array}{c|ccc}
+        variable        & up     & down   \\
+        f^{u\lambda}    & f^{uu} & f^{ud} \\
+        \hline
+        P(f^{u\lambda}) & p      & 1-p    \\
+    \end{array}
+$$
+$\Sigma^{u\lambda}_\delta=
+    \begin{bmatrix}
+        S^{uu} & r+1 \\
+        S^{ud} & r+1
+    \end{bmatrix}
+$
+we then denote $\Sigma^{uk}_\delta \Omega_{\lambda\tau}^\delta=\delta^k_\lambda\delta^u_\tau$
+then
+$\Sigma^{u\lambda}_\delta \Phi^\delta_\xi=f^{u\lambda}\delta^u_\xi$
+then
+$\Omega_{\lambda\tau}^\delta\Sigma^{u\lambda}_\delta \Phi^\delta_\xi=f^\lambda\delta^u_\xi$
+
+Then the same formula for the $f^u$ holds true
+we get
+$\Phi^k_u=\Omega_{\lambda u}^kf^{u\lambda}$
+
+$f^1=\sigma^1_k\Phi^k=\sigma_k\Omega_\lambda^kf^{u\lambda}$
+
 
 
 \section{Principal}
