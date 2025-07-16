@@ -1,0 +1,198 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsfonts}  % For math symbols and fonts
+\usepackage{graphicx}                   % For including images
+\usepackage{hyperref}                   % For hyperlinks
+\usepackage{cite}                       % For citations
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\usepackage{amsthm}
+% Define new theorem-like environments
+% Define environments
+\theoremstyle{definition} % Non-italicized style
+\newtheorem{definition}{Definition}[section]
+\newtheorem{exercise}{Exercise}[section]
+
+% Title and author info
+\title{A sample method for overdamped Langevin Equation}
+\author{Zhang Jinrui\thanks{alternative email:zhangjr1022@mails.jlu.edu.cn} \\ \texttt{jerryzhang40@gmail.com}}
+
+\date{20250714}  % Empty date; optional, you can also specify a date here
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    In this article, I tried to get the solution
+    distribution of the overdamped Langevin Equation.
+\end{abstract}
+
+\section{recite of the problem}
+The overdamped Langevin Equation use the following
+version from wikipedia
+\cite[LangevinDynamics]{LangevinDynamics}
+\[
+    \mathrm{d}\mathbf{X} = -\frac{1}{\gamma} \nabla U(\mathbf{X}) \,\mathrm{d}t + \frac{\sqrt{2}\sigma}{\gamma} \,\mathrm{d}\mathbf{W}(t)
+\]
+I choose to solve this one for some simplisity.
+\[
+    \mathrm{d}\mathbf{X} = \nabla U(\mathbf{X}) \,\mathrm{d}t +  \,\mathrm{d}\mathbf{W}(t)
+\]
+or this one.
+\[
+    \dot{\mathbf{X}} =  \nabla U(\mathbf{X}) +  \,\boldsymbol{\eta}(t)
+\]
+where \(\eta=\dot{\mathbf{W}}\)
+\[
+    \langle \eta_i(t) \rangle = 0, \quad
+    \langle \eta_i(t) \eta_j(t') \rangle = \delta_{ij} \delta(t - t')
+\]
+
+\section{roadmap}
+The main idea to solve this equation is
+to use the pinn\cite{raissi2017physics} to fitting the solution
+distribution \(p(x,t)\)
+where for every \(t\) we have
+\(\int_{-\infty}^{\infty}p(x,t)dx=1\)
+
+We need a differential equation about this
+\(p(x,t)\) to make the pinn work.
+
+First we need to find a differential
+relation only involves \(p(x,t)\).
+Then we can use pinn to get the solution
+distribution \(p(x,t)\).
+
+\subsection{definite equation}
+To simplify the original equation
+\[
+    \dot{\mathbf{X}} =  \nabla U(\mathbf{X}) +  \,\boldsymbol{\eta}(t)
+\]
+We first remove the wenier term,
+as following.
+\[
+    \dot{\mathbf{X}} =  \nabla U(\mathbf{X})=u
+\]
+
+For a short period of time increment \(dt\)
+the problem involves two distribution
+\(p(x,t)\) and \(p(x,t+dt)\)
+and we choose a initial point at \(t\)
+denote as \(x_t\) and the solution point
+at time \(t+dt\) is \(x_{t+dt}\)
+
+So the Lagrangian derivative
+is as follow
+\[
+    \frac{Dp}{Dt} = \frac{\partial p}{\partial t} + u \cdot \nabla p
+\]
+\[
+    \frac{Dp}{Dt}=\frac{p(x_{t+dt},t+dt)-p(x_{t},t)}{dt}
+\]
+and Consider the probabilistic mass around the
+point \(x_{t+dt}\) and \(x_{t}\) we can get a following
+relation
+\[p(x_{t+dt},t+dt)(dx)(e^{vdt})=p(x_{t},t)(dx)\],
+where \[v=\nabla \cdot u\]
+which is the same as follow
+\[p(x_{t+dt},t+dt)=p(x_{t},t)(e^{-vdt})\]
+as the \(dt\) is infinitesimal so
+\(e^{-vdt}=1-vdt\)
+so we can get
+\[
+    p(x_{t+dt},t+dt)-p(x_{t},t)=-vdt
+\]
+which is
+\[
+    \frac{Dp}{Dt}=-v=-\nabla \cdot u=-\Delta U=\frac{\partial p}{\partial t} + u \cdot \nabla p
+\]
+then we get a formula only involves \(p(x,t)\)
+\[
+    \frac{\partial p}{\partial t} + u \cdot \nabla p +\nabla \cdot u=0
+\]
+the initial distribution may take any thing,
+but for one case we can chose the dirac function
+\[
+    p(x,0)=\delta(x - x_0)
+\]
+in this case this model is just a plain
+ODE. but in a distribution case.
+
+\subsection{sochastic equation}
+Add back the wenier term the equation backs to
+\[
+    \dot{\mathbf{X}} =  \nabla U(\mathbf{X}) +  \,\boldsymbol{\eta}(t)
+\]
+For the same period of time increment \(dt\)
+the problem involves two distribution
+\(p(x,t)\) and \(p(x,t+dt)\)
+and we choose a initial point at \(t\)
+denote as \(x_t\) and the solution point
+at time \(t+dt\) is \(x_{t+dt}\)
+
+then for the point relations by the solution of the
+equation, \(x_t\) gose to \(x_{t+dt}\)
+we denote this as \(x_{t+dt}=F(x_t)\)
+and \(x_{t}=B(x_{t+dt})\)
+
+For a certain point \(x\) at time \(t+dt\)
+we want \(p(x,t+dt)\)
+this involves a convolution process.
+\[
+    p(x,t+dt)=\int_{-\infty}^{\infty}g(y)p(B(x),t)e^{-vdt}dy
+\]
+where $g(y)$ is the probabilistic density function of
+normal distribution
+\[
+    \mathcal{N}(0, dt)
+\]
+If we can some how transform this equation to a
+differential equation only involves
+\(p(x,t)\), then we can solve this
+by pinn as the definite model.
+But this process is way too hard to deal.
+
+\subsection{sochastic equation:sampling}
+I suppose to sample the
+\[
+    \boldsymbol{\eta}(t)
+\]
+According to the time discrete size when we
+use pinn.
+when we have sample a specific sample of
+\[
+    \boldsymbol{\eta}_k(t)
+\]
+we can then rewrite
+\[
+    \dot{\mathbf{X}} =  u_t=\nabla U(\mathbf{X}) +  \,\boldsymbol{\eta}(t)
+\]
+\[
+    \frac{\partial p}{\partial t} + u_t \cdot \nabla p +\nabla \cdot u_t=0
+\]
+sove this equaiton we can get a sample solution
+\[
+    p_k(x,t)
+\]
+to sample a lot
+\[
+    \boldsymbol{\eta}_k(t)
+\]
+we can average all the \(p_k\)
+to get the estimated distribution function
+\(p\sim\frac{\sum_{k=1}^{N}p_k}{N}\)
+
+
+
+
+
+
+
+
+
+\bibliographystyle{plain}  % or another style like unsrt, IEEEtran, etc.
+\bibliography{references}  % references.bib is the file name
+
+\end{document}

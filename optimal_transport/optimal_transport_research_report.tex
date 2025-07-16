@@ -1,0 +1,898 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsfonts}  % For math symbols and fonts
+\usepackage{graphicx}                   % For including images
+\usepackage{hyperref}                   % For hyperlinks
+\usepackage{cite}                       % For citations
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\usepackage{amsthm}
+% Define new theorem-like environments
+% Define environments
+\theoremstyle{definition} % Non-italicized style
+\newtheorem{definition}{Definition}[section]
+\newtheorem{exercise}{Exercise}[section]
+
+% Title and author info
+\title{optimal transport research report}
+\author{Zhang Jinrui\thanks{alternative email:zhangjr1022@mails.jlu.edu.cn} \\ \texttt{jerryzhang40@gmail.com}}
+
+\date{20250714}  % Empty date; optional, you can also specify a date here
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    In this article, I tried to do some research
+    about optimal transport.
+\end{abstract}
+
+\section{recite of the problem}
+This link \cite[Transportation-theory]{Transportation-theory}
+is what I find the closest defination
+Prof. Pass gives on lecture.
+
+\subsection{one dimensional case}
+
+But the defination in the wiki still
+somehow different from what Prof. Pass
+gives on lecture.
+
+So the one dimensional
+problem is we have two
+probabilistic distribution on
+$X=Y=[0, 1]$.
+The two distribution is
+$h(x)>0$ and $g(y)>0$
+We have a cost function
+$c(x,y)=\lVert x-y \rVert^2$ of the
+transportation cost of the
+probabilistic density.
+
+We want to find a Map $T: X \to Y$
+satisfied $\forall y\in Y$ we have
+$g(y)dy=\int_{x \in T^-1(y)}h(x)dx$
+which is
+$g(T(x))T'(x)=\int_{x \in T^-1(y)}h(x)$
+
+If $T\in C^1$ then we can assert that
+$T'\ne 0$ for if we assume some $\xi\in X$
+such that $T'(\xi)=0$ then
+$0=g(T(x))T'(x)=\int_{x \in T^-1(y)}h(x)>0$
+which can't be true.
+So $T'(\xi)\ne0$
+
+By the intermediate value theorem,
+$T$ is a one to one map from $X$
+to $Y$ then $T'(\xi)>0$
+
+then $T$ is a monotonous function.
+
+\subsection{two dimensional case}
+So the two dimensional
+problem is we have two
+probabilistic distribution on
+$X=Y=[0, 1]^2$.
+The two distribution is
+$h(x)>0$ and $g(y)>0$
+We have a cost function
+$c(x,y)=\lVert x-y \rVert^2$ of the
+transportation cost of the
+probabilistic density.
+same argument as one dimensional case
+we can get
+$\det(\frac{\partial y}{\partial x})\ne0$
+which the $\frac{\partial y}{\partial x}$
+is the jacobian matrix.
+
+
+
+
+
+
+\subsection{one period binomial model}
+The model has some basic settings.
+For this model it only have discrete
+period. In this case it's one period.
+
+Suppose the time involves tick 0 and tick 1,
+between them is the time period.
+the price at tick 0 is $S^1$
+and at tick 1 the price is a random variable
+$S^\lambda$ which shows by the following chart.
+$$
+    \begin{array}{c|ccc}
+        variable     & up       & down     \\
+        S^\lambda    & uS^1=S^u & dS^1=S^d \\
+        \hline
+        P(S^\lambda) & p        & 1-p      \\
+    \end{array}
+$$
+which satisfies $d<1+r<u$ the no-arbitage condition.
+which $r$ is the bank account interest rate.
+
+So the two assets during this period shows by
+the following chart.
+
+$$
+    \begin{array}{c|ccc}
+        asset & tick0 & tick1     \\
+        stock & S^1   & S^\lambda \\
+        \hline
+        bank  & 1     & 1+r       \\
+    \end{array}
+$$
+
+We want to make a derivative product,
+call option.
+which gives the costomos back $f_u$
+or $f_d$ amount of money at tick1, while charge
+$x$ amount of money when tick0
+
+$$
+    \begin{array}{c|ccc}
+        asset  & tick0 & tick1     \\
+        stock  & S^1   & S^\lambda \\
+        \hline
+        bank   & 1     & 1+r       \\
+        \hline
+        option & f^1   & f^\lambda \\
+    \end{array}
+$$
+which $f$ can be also view as a random
+variable which is shown the next chart.
+$$
+    \begin{array}{c|ccc}
+        variable     & up  & down \\
+        f^\lambda    & f^u & f^d  \\
+        \hline
+        P(f^\lambda) & p   & 1-p  \\
+    \end{array}
+$$
+
+we make a portfolio of $\Delta$ units of
+stock and $\Psi$ units of the bank account.
+
+then we want at tick1 we have
+
+$\Delta S^\lambda+\Psi(1+r)=f_\lambda$
+
+this is the equation in a vecotr matrix form.
+
+where
+$f^\lambda=
+    \begin{bmatrix}
+        f_u \\
+        f_d
+    \end{bmatrix}
+$
+and we can denote
+$\Phi^\delta=
+    \begin{bmatrix}
+        \Delta \\
+        \Psi
+    \end{bmatrix}
+$
+and
+$S^\lambda=S^\delta=
+    \begin{bmatrix}
+        uS^1 \\
+        dS^1
+    \end{bmatrix}
+$
+and
+$\Sigma^\lambda_\delta=
+    \begin{bmatrix}
+        S^u & r+1 \\
+        S^d & r+1
+    \end{bmatrix}
+$
+and we can rewrite it as follow
+$\Sigma^\lambda_\delta \Phi^\delta=f^\lambda$
+
+we then denote $\Sigma^k_\delta \Omega_\lambda^\delta=\delta^k_\lambda$
+then
+$\Omega_\lambda^k\Sigma^\lambda_\delta \Phi^\delta=\Omega_\lambda^kf^\lambda$
+then
+$\delta^k_\delta\Phi^\delta=\Omega_\lambda^kf^\lambda$
+then
+$\Phi^k=\Omega_\lambda^kf^\lambda$
+
+And if we denote
+$\sigma^1_k=
+    \begin{bmatrix}
+        S^1 & 1
+    \end{bmatrix}
+$
+then we get
+$f^1=\sigma^1_k\Phi^k=\sigma_k\Omega_\lambda^kf^\lambda$
+
+\subsection{two periods binomial model}
+for one case if we already get to $f^u$
+at tick1, then we now have a price at
+$uS^1$
+$$
+    \begin{array}{c|ccc}
+        variable        & up          & down        \\
+        S^{u\lambda}    & uS^u=S^{uu} & dS^u=S^{ud} \\
+        \hline
+        P(S^{u\lambda}) & p           & 1-p         \\
+    \end{array}
+$$
+$$
+    \begin{array}{c|ccc}
+        asset  & tick0 & tick1 & tick2        \\
+        stock  & S^1   & S^u   & S^{u\lambda} \\
+        \hline
+        bank   & 1     & 1+r   & (1+r)^2      \\
+        \hline
+        option & f^1   & f^u   & f^{u\lambda} \\
+    \end{array}
+$$
+where
+$$
+    \begin{array}{c|ccc}
+        variable        & up     & down   \\
+        f^{u\lambda}    & f^{uu} & f^{ud} \\
+        \hline
+        P(f^{u\lambda}) & p      & 1-p    \\
+    \end{array}
+$$
+$\Sigma^{u\lambda}_\delta=
+    \begin{bmatrix}
+        S^{uu} & r+1 \\
+        S^{ud} & r+1
+    \end{bmatrix}
+$
+we then denote $\Sigma^{uk}_\delta \Omega_{\lambda\tau}^\delta=\delta^k_\lambda\delta^u_\tau$
+then
+$\Sigma^{u\lambda}_\delta \Phi^\delta_\xi=f^{u\lambda}\delta^u_\xi$
+then
+$\Omega_{\lambda\tau}^\delta\Sigma^{u\lambda}_\delta \Phi^\delta_\xi=f^\lambda\delta^u_\xi$
+
+Then the same formula for the $f^u$ holds true
+we get
+$\Phi^k_u=\Omega_{\lambda u}^kf^{u\lambda}$
+
+$f^1=\sigma^1_k\Phi^k=\sigma_k\Omega_\lambda^kf^{u\lambda}$
+
+
+
+\section{Principal}
+The basic principal is to find the vulnerability
+of the market. To be more practical and more
+mathematically, we are longing for the breaking
+of the symmetries. According to the
+Efficient-market hypothesis\cite[Hypothesis]{EMH}
+we can give out the first and fundamental
+definition of this report.
+
+\begin{definition}[EMH means Symmetries]
+    \label{def:mydefinition}
+    We say a market is completely EMH if and
+    only if for every condition $A$, the random
+    variable of the logarithmic growth rate $W$
+    agrees that $\mathbb{E}_{W\mid A}(W)\doteq 0$.
+\end{definition}
+
+Analytically, if we want to prove that a market is
+EMH we need to prove for all the condition A
+$\mathbb{E}_{W\mid A}(W)\doteq 0$, this is
+obviously a very large amount of work to do, and
+this is also a very profitless effort(we do all
+the strive to find that we can't make money).
+
+Base on this definition, all the experiments which
+have been taken or will be taken in the future
+are dedicated to find a condition $X$ that
+$\mathbb{E}_{W\mid X}(W)>0$ significantly.
+
+\section{Current Roadmap}
+\subsection{statistics}
+\subsubsection{X is Close Price}
+Choose $X=\mathbb{R}$ which is the close price.
+\subsubsection{X is the difference between MA and close price}
+By intuition, when the price is above the MA,
+It should some how comes back, and vice versa.
+\subsubsection{statistics for Total Variation and fractals}
+This method is about Hurst Exponent,
+Fractal Dimension and the Bounded Variation
+function model.
+
+standard deviation with moving average.
+$S(t,n)$ means start from
+$t$ include $n$ data point,
+that is
+$S(t,n)=\sqrt{\frac{1}{n}\sum_{k=t}^{t+n-1}
+        \left(P_k-mean(P)\right)}$
+for the Hurst Exponent the $S(n)$ shoud be
+stable over time
+
+\subsection{machine learning}
+\subsubsection{X is prefix sequence}
+To find feature in the prefix sequence. The
+Transformer and 1D-CNN is now under
+the consideration.
+This topic derives experiments including
+EXP20250119
+
+\subsubsection{Data process}
+Currently method is only short period.
+The $W$ in Definition~\ref{def:mydefinition}
+is $Lr_t$ which is a very local property.
+The maximum and minimum is just in the range
+of $3$ time unit. This is way to small period.
+
+We need to some how ignore the local fluctuation,
+but get the long term trend and the maximum
+and minimum in a meaningful sense in
+a specific scale extend.
+
+Here I want to introduce a new method based
+on the gradient descent.
+
+The method in the history include the
+linear regression by Gauss. And the fellow
+mathematician developed some high degree
+regression method, include polynomial regression,
+logistic regression which is even transfinite.
+
+But I want a more simple and more interpolation
+like method.
+
+We use a simplest interpolation, which is
+the linear interpolation.
+
+By the classical interpolation theory,
+the interpolation point in dimension
+$t$ should also be non-uniform, and it
+will be determined by the Gauss' method.
+
+Now we can use the power of the gradient
+descent.
+
+Suppose we want to interpolate $N$ points
+to a period of time series
+$P_t,t\in\left[T_s,T_e\right]$.
+$\Delta=\{\delta_n|\delta_n=
+    (\tau_n,\pi_n)\}_{n=1}^N$.
+Then for this regression problem the
+parameter set is
+$\Delta^*=\Delta\setminus\left\{\tau_1,\tau_N\right\}$ which
+$
+    \left|
+    \Delta^*
+    \right|=2\left(N-1\right)
+$
+The boundary must be fixed, that is
+$\tau_1=T_s,\tau_N=T_e$
+
+Initialize the set
+$\left\{\tau_n\right\}_{n=1}^N$
+to be uniformly space from $T_s$ to $T_e$
+
+We assume
+$\forall 1\leq n\leq N-1,\tau_n<\tau_{n+1}$
+and for each segment
+$\left[\tau_n,\tau_{n+1}\right]$
+we do the oridary linear regression
+for the points
+$\left\{\psi_t=\left(t,P_t\right)|
+    \tau_n\leq t\leq\tau_{n+1}\right\}$
+
+Then we can get the coefficient of determination
+$\left\{R^2_n\right\}_{n=1}^{N-1}$
+for each line segment
+$\left[\tau_n,\tau_{n+1}\right]$
+
+Then set the target function
+$f({\psi_t}_{t\in\left[T_s,T_e\right]},
+    \Delta^*)
+    =\sum_{n=1}^{N-1}R^2_n$
+
+We want to optimize the $\Delta^*$
+and make the
+$f({\psi_t}_{t\in\left[T_s,T_e\right]},
+    \Delta^*)$
+optimum.
+
+To be more practical, we explicitly define
+each variable name.
+
+There is one hyper-parameter $N$, which
+defined the number of segments.
+
+The input date to fit is a
+$\text{(K,2)-tensor}$
+$\psi_k=\left(t_k,P_k\right)$,
+$k\in\mathbb{Z},1\leq k\leq K$
+
+Then define a $\text{(N)-tensor}$ $\chi_n$,
+$n\in\mathbb{Z},1\leq n\leq N$
+Use this $\chi_n$ we can calculate
+the length $L_n$ of each segment.
+use the softmax $\sigma(\cdot)$
+to make the sum of $L_n$
+is a const;
+Set the data length $\Lambda=t_K-t_1$
+Then $L_n=\Lambda\sigma(\chi_n)$
+This ensure
+$\sum_{n=1}^{N}L_n=\Lambda$
+
+Then $\tau_n=(\sum_{i=1}^{n}L_i)+t_1$
+and
+$n\in\mathbb{Z},0\leq n\leq N$
+$\tau_0=t_1$
+
+Then define a new $\text{(N+1)-tensor}$
+$\pi_n$
+$n\in\mathbb{Z},0\leq n\leq N$
+
+The implementation is in
+\cite[computeGraph]{Data_process}.
+
+The result image is as follow.
+\begin{figure}[!ht]
+    \centering
+    % \includegraphics[width=0.45\textwidth]{figs/DataProcess/N=5.png}
+    % \includegraphics[width=0.5\textwidth]{figs/DataProcess/N=10.png}
+    \caption{Interpolation N=5 N=10}
+\end{figure}
+
+\subsubsection{evolution strategy}
+evolution strategy can be viewed as a
+zeroth-order gradient descent method.
+Now let's define some notations.
+\begin{definition}[notations]
+    \label{def:notations}
+    $\tau$ represents the discrete time of the stock.
+
+    $\Delta\tau$ denotes the discretized time interval.
+
+    $\pi(\tau)$ is the stock price at time $\tau$.
+
+    Suppose at $(t,p)$
+    an automlized amount
+    of money $\Delta M$ is invested.
+    We need to have a strategy when to sell.
+    so $P_{S_\theta}(\ln(\frac{\tau}{t}),\ln(\frac{\pi}{p}))$
+    is the probability to sell at the state
+    $(\ln(\frac{\tau}{t}),\ln(\frac{\pi}{p}))$
+
+    Suppose at $(t,p)$
+    an automlized amount
+    of money $\Delta M$ is selled.
+    We need to have a strategy when to buy.
+    so $P_{B_\theta}(\ln(\frac{\tau}{t}),\ln(\frac{\pi}{p}))$
+    is the probability to buy at the state
+    $(\ln(\frac{\tau}{t}),\ln(\frac{\pi}{p}))$
+
+    all the probability is to make a decision
+    whether to buy or sell. but if the balance is
+    not enough then we can't buy or sell.
+    this situation is the survival conditon that
+    also i want the model to learn.
+
+    $S_\theta,B_\theta$ is the
+    parameter of the model.
+    we can define a FCN network with sigmoid
+    function to represent the probability.
+
+
+\end{definition}
+
+\section{Principal of Unbiased Model}
+The long last dream of finding the asymmetry
+in market then make money from EMH failure
+seems to be too hard to achieve.
+So in the other hand, given the EMH hypothesis,
+hold true for the market, we can dedicate
+ourself to find a Unbiased model.
+
+\begin{definition}[UnbiasedModel]
+    \label{def:UnbiasedModel}
+    We say a model is Unbiased if and
+    only if it work under given condition
+    $\mathbb{E}_{W\mid A}(W)\doteq 0$
+    \ref{def:mydefinition}.
+\end{definition}
+
+This is hard to manage to do, but not all totally
+impossible.
+\subsection{sochastic differential equation}
+This section is a background theory which not
+a specific method.
+\begin{definition}[autonomous sochastic differential equation]
+    \label{def:aSDE}
+    $x_0=X(t_0)$ is the initial value.
+    $dx_t=V(x_t)dt$
+    where $V(x)$ is a random variable
+    which determined only by the position
+    vector $x_t$
+    Then the solution of this equation
+    $X(t)=\int_{t_0}^tV(X(s))ds$
+    then for each $t$
+    we want to get the random distribution of
+    $X(t)$ this random distribution is
+    the solution to the original equation.
+\end{definition}
+
+\subsection{+1s-2s method}
+The theory is as follow.
+We begin with the random variable in
+\ref{def:mydefinition} as a normal distribution
+$N(W,\sigma)$ which $\mathbb{E}(W)\doteq 0$
+
+A simple derivation would give us result as follow.
+set a lower sell bar $Ls=-2\sigma$,
+and a higher sell bar $Hs=+1\sigma$
+for the first time step dt we have a distribution
+$D_1(x)=N(W,\sigma)$
+By the way, $D_0$ is a single point distribution.
+and the probability of the first step can
+be simplify as a discrete variable $W_1$ which
+$$
+    \begin{array}{c|ccc}
+        action & Ls       & Hold   & Hs     \\
+        W_1    & -2\sigma & 0      & \sigma \\
+        \hline
+        P(W_1) & 0.0228   & 0.8185 & 0.1587 \\
+    \end{array}
+$$
+Which the expect contribution is
+$\mathbb{E}_1
+    =-2\sigma0.0228+\sigma0.1587
+    =0.1131\sigma$
+
+Then we need to calculate the second step
+$D_2(x)=
+    \frac{\int_{-2\sigma}^{\sigma}D_1(t)D_1(x-t)dt}
+    {\int_{-2\sigma}^{\sigma}D_1(t)dt}$
+simplify a little bit we can get
+$\overline{D_2(x)}=0.8185D_2(x)=
+    \int_{-2\sigma}^{\sigma}D_1(t)D_1(x-t)dt$
+The discrete variable $W_2$ which
+$$
+    \begin{array}{c|ccc}
+        action & Ls       & Hold   & Hs     \\
+        W_2    & -2\sigma & 0      & \sigma \\
+        \hline
+        P(W_2) & 0.0713   & 0.7544 & 0.1743 \\
+    \end{array}
+$$
+Which the expect contribution is
+$\mathbb{E}_2
+    =(-2\sigma0.0713+\sigma0.1743)0.8185
+    =0.02596\sigma$
+
+Repeat this process we can get
+$D_3(x)=
+    \frac{\int_{-2\sigma}^{\sigma}D_2(t)D_2(x-t)dt}
+    {\int_{-2\sigma}^{\sigma}D_2(t)dt}$
+simplify a little bit we can get
+$\overline{D_3(x)}=0.7544*0.8185D_2(x)=
+    \int_{-2\sigma}^{\sigma}D_2(t)D_2(x-t)dt$
+The discrete variable $W_3$ which
+$$
+    \begin{array}{c|ccc}
+        action & Ls       & Hold   & Hs     \\
+        W_3    & -2\sigma & 0      & \sigma \\
+        \hline
+        P(W_3) & 0.1619   & 0.6827 & 0.1554 \\
+    \end{array}
+$$
+Which the expect contribution is
+$\mathbb{E}_3
+    =(-2\sigma0.1619+\sigma0.1554)0.8185*0.7544
+    =-0.1040\sigma$
+
+So we should end sell it within two day.
+
+For further experiments we need to statistically
+get the distribution $D_1(W)$ in stead of
+assuming it is a normal distribution.
+
+The action strategy is to buy and wait one day.
+check if it exceed the $Hs$ or $Ls$.
+and then wait for the next day.
+and sell any way.
+to get a total expectation of
+$\mathbb{E}
+    =\mathbb{E}_1+\mathbb{E}_2
+    =0.1391\sigma$
+
+And notice when in practice
+$\mathbb{E}-fee$ should greater than zero, or
+it won't beat the cost fee.
+
+Unfortunately,
+$\mathbb{E}_1>=0$
+could be a result that
+$\int_{-2\sigma}^{\sigma}D_2(t)dt<=0$
+and
+exactly
+$\mathbb{E}_1+\int_{-2\sigma}^{\sigma}D_2(t)dt=0$
+
+But this method still have one hope to be
+verify by the pure mathematics
+is that
+the expectation sequence
+add up to zero
+which means
+$\delta_i^i\mathbb{E}_i=0$
+but we just need to cut off when
+$\mathbb{E}_i<0$ and sell out. it will be fine?
+
+Short gacha guess would reveal
+that it will have a expectation of
+$\mathbb{E}_{total}=-0.5\sigma<0$
+
+which we need the
+$\mathbb{E}_{cut}>0.5\sigma$
+
+\subsection[bsPair]{max draw back control bsPair method}
+\begin{figure}[!ht]
+    \centering
+    % \includegraphics[width=0.45\textwidth]{figs/maxDrawBackControl/Wave.jpg}
+    \caption{illustration}
+    \label{fig:bsPair}
+\end{figure}
+
+Sometimes, the "keep holding" strategy is
+to cost in one side, is that, the draw
+back is very high, basically, the same
+as the local variation rate.
+So we need to control the maximum draw back.
+
+This time I want to log a method,
+bsPair method.
+The basic idea is to sell when there is a
+$1\%$ draw back. We sell it, and then,
+when the price hit this again, we buy it again.
+As Figures\ref{fig:bsPair} shows,
+'b' is the buy point, and 's' is the
+sell point.
+suppose the trade fee is $\phi$.
+And the random variable $N_{\phi}$ is the
+total pair number of buy and sell,
+after the case is over.
+I say a case is over is the automata fufill
+the sell and finished bar such as reach the
+level $P_H$.
+Then the expectation of the random variable
+is $\mathbb{E}(N_{\phi})$.
+
+Suppose the price is $P_{t_0}$ at time $t_0$,
+we buy $\mu$ amount of stock at time $t_0$,
+The two line is $P_L$ and $P_H$.
+
+Normally in automata we have
+$C_H=\ln(\frac{P_H}{P_{t_0}})$
+and
+$C_L=\ln(\frac{P_L}{P_{t_0}})$
+is fixed, to inversely get $P_L$ and $P_H$.
+
+$\mu$ amount of stock is the principal.
+And the total gas fee is
+$\phi\mathbb{E}(N_{\phi})$,
+By the time we sell at $P_H$.
+
+So all the fee is $\phi\mathbb{E}(N_{\phi})$
+the total profit is
+$\mu\frac{P_H}{P_{t_0}}=\mu\exp(C_H)$.
+
+And the fee rate is $C_\phi$
+which $\phi=\mu\exp(C_\phi)$
+
+We need
+$\mu\exp(C_\phi)\mathbb{E}(N_{\phi})
+    \ll
+    \mu\exp(C_H)$
+
+Which is equivalent to
+$C_\phi+\ln(\mathbb{E}(N_{\phi}))
+    \ll
+    C_H$
+
+When $C_\phi\doteq5\times10^{-3}$
+and
+$C_H\doteq10\times10^{-3}$
+we can have total logarithmic growth
+rate at
+$C=
+    \ln(
+    \exp(C_H)-\exp(C_\phi)\mathbb{E}(N_{\phi}))$.
+
+When in classic automata, we have
+$\mathbb{E}(N_{\phi})=2$
+
+But if we have this method, we can control
+the maximum draw back, which is
+estimated as
+$\chi=
+    \mu
+    (\exp(C_\phi)\mathbb{E}(N_{\phi})
+    +
+    \exp(C_L))$
+
+So we can take back $1-\chi$
+of the principal.
+
+If the first condition
+$\mu\exp(C_\phi)\mathbb{E}(N_{\phi})
+    \ll
+    \mu\exp(C_H)$
+is satisfied, then we can
+estimated
+$\exp(C_\phi)\mathbb{E}(N_{\phi})
+    +
+    \exp(C_L)<\exp(C_L)+\exp(C_H)$
+
+\begin{definition}[max draw back]
+    \label{def:maxDrawBack}
+    The max draw back is the max draw back
+    because of the variation of the price.
+\end{definition}
+
+\section{Current Roadmap of UnbiasedModel}
+\subsection{Grids}
+Grids are a very old and simple method and
+there is nothing special to say about this
+method.
+
+But there are several experiments need to
+be carried out to get a better optimization
+of this ancient method.
+
+First we need to get the distribution of the
+$P_t$
+We always refered to the distribution of this
+$Lr_t=\ln(\frac{P_{t+1}}{P_{t}})$
+But now we want the distribution of $P_t$
+itself.
+
+$P_t$ is the historical data which is definite
+set the random variable $\rho$ is the random
+variable of $P_t$
+The meaning is you get a time you can say the
+possibility of get $P$ is $P(\rho=P)$
+
+
+\section{EXP20250119 prefix sequence}
+This experiment use the prefix sequence
+to be the condition space X.
+
+\begin{definition}[prefix space]
+    All possible prefix sequence form a space X
+\end{definition}
+
+If the market is EMH.
+By Definition~\ref{def:mydefinition}, this means
+for all subset of $X$,
+$\mathbb{E}_{W\mid A}(W)\doteq 0$. That is
+$
+    \forall A\subseteq X,
+    \mathbb{E}_{W\mid A}(W)\doteq 0
+$
+
+So if we want to find the vulnerability of
+the market we want to find a $X$ such that
+there exist a $A\subseteq X$ agrees that
+$\mathbb{E}_{W\mid A}(W)>0$
+
+Consider a simplest senario, that is, we only
+treat the sequence as descend and ascend. Then
+for a space of length $L$ then
+$\left|X\right|=2^L$, which is a nightmare for
+statistics, so I'm forced to use machine learning
+to try to find something.
+
+\subsection{Data regularization}
+Current data regularization is as follow.
+Suppose we have a time series
+$P_t \in \mathbb{R}_+$
+We want it range from $(0,1)$ and have a symmetry
+about descend and ascend around zero.
+So let $Lr_t=\ln(\frac{P_{t+1}}{P_{t}})$.
+$Lr_t\in \mathbb{R}$ and then
+$Sg_t=\tanh(Lr_t)$
+
+Then $X=\{(Sg_k)|t_{start}\leq k\leq t_{end}\}$
+
+\subsection{Conclusion}
+In \cite[PrefixSequence]{EXP20250119PrefixSequence}
+I implemented the function to get $Sg_t$
+
+The first Stage experiment result is
+very bad in \cite[Cov1d]{EXP20250119PrefixSequenceGPTCov1d}
+
+\section{EXP20250120 MA}
+This experiment use the difference between
+MA and close price as the space X.
+
+\begin{definition}[MACP difference]
+    $D_t^N:=A_t^N-P_t$
+    which
+    $A_t^N=\sum_{k=t-N+1}^tP_k$
+    which $N$ is a hyper-parameter
+    when N is a single number then $D_t:=D_t^N$
+    is a time series of number
+    when $N$ can be multiple different numbers
+    then $D_t^N$is a vector time series.
+\end{definition}
+
+\subsection[Fix N]{Fix $N$}
+Suppose $N$ is a fixed single number then
+$D_t$ is a time serie.
+To simplify the problem we define a
+classification variable $V$
+\begin{definition}[Ternary Classification]
+    $
+        V_t:=
+        \begin{cases}
+            1,  & P_t\in\left(0.1,+\infty\right)  \\
+            0,  & P_t\in\left(-0.1,0.1\right)     \\
+            -1, & P_t\in\left(-\infty,-0.1\right) \\
+        \end{cases}
+    $
+\end{definition}
+
+Use the bin size of $0.01$ which is the smallest
+increment of the price. Do the statistics over
+all $D_t\in\mathbb{R}$ with the bin size $0.01$
+to obtain the conditional probability distribution
+of the random variable $V_t$
+
+\subsection{Result}
+\begin{figure}[!ht]
+    \centering
+    % \includegraphics[width=0.45\textwidth]{figs/EXP20250120MA/EXP20250120MA_RandomWalk.png}
+    % \includegraphics[width=0.5\textwidth]{figs/EXP20250120MA/EXP20250120MA_PRICE.png}
+    \caption{RandomWalk(left),realdata(right)}
+\end{figure}
+The result shows for the Random RandomWalk, the
+curve is like sigmoid but exchude a normal
+distribution for $V_t=0$
+While the distribution for realdata is more
+intricate the blue curve is more like a
+t-distribution.
+\begin{figure}[!ht]
+    \centering
+    % \includegraphics[width=0.45\textwidth]{figs/EXP20250120MA/EXP20250120MA_Prc.png}
+    % \includegraphics[width=0.5\textwidth]{figs/EXP20250120MA/EXP20250120MA_Prc_.png}
+    \caption{Fixed:RandomWalk(left),realdata(right)}
+\end{figure}
+
+The original code that GPT write, use $D_{t+1}$
+to predict $V_t$ which in the RandomWalk shows
+significantly distribution bias.This fixed version
+has test on the RandomWalk don't have any bias
+on the RandomWalk.
+
+
+\section{EXP20250615 +1s-2s method}
+This experiment would practice the
++1s-2s method.
+Basically it needs to statistically get
+the distribution of the random variable
+$D_1$ and to compute the convolution
+cross verify the result of $D_2$
+and get the expectation.
+
+\subsection[statistic D1]{statistic of $D_1$}
+
+\section[EXP20250702 ρ]{EXP20250702 $\rho$}
+Suppose we have the historical data $P_t$
+We want to get $\rho$.
+We need a function to get the distribution
+of the $\rho$, Like a box-line graph, of any
+given time period.
+
+
+
+\bibliographystyle{plain}  % or another style like unsrt, IEEEtran, etc.
+\bibliography{references}  % references.bib is the file name
+
+\end{document}
