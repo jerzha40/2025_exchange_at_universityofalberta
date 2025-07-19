@@ -1,24 +1,36 @@
-from FCN import FCN
-from torch import save
-from PathManager import PathManager
-import json
+from torch import randn, sqrt, linspace, tensor, zeros, float64
+import matplotlib.pyplot as plt
 
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
-pm = PathManager()
+T = (0, 1)
+X = (0, 1)
+ε = 1
+NT = 1000
+NX = 200
+dt = tensor((T[1] - T[0]) / NT, dtype=float64)
+X = zeros(NT)
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
-p = FCN(2, 1, 64, 4)
-save(p, pm.get_data_path("p", ".ntdt"))
-"""p, p(x,t), probabilistic distribution over time
+x = linspace(X[0], X[1], NX, dtype=float64)
+t = linspace(T[0], T[1], NT, dtype=float64)
+print("asgg", x[:7], t[:7], sep="\n")
+print("askj", x.shape, t.shape, sep="\n")
+"""
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
-period = 0
-path = pm.get_data_path("period")
-with path.open("w", encoding="utf-8") as f:
-    json.dump(period, f, indent=2)
-"""period, which period now
+for n in range(NT - 1):
+    ξ = randn(1)  # 产生 dim 维标准正态随机数
+    diffusion = ε * sqrt(dt) * ξ
+    X[n + 1] = X[n] + diffusion
+    if X[n + 1] > 1:
+        X[n + 1] = 2 - X[n + 1]
+    if X[n + 1] < 0:
+        X[n + 1] = 0 - X[n + 1]
+"""
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
+plt.plot(t, X)
+plt.show()

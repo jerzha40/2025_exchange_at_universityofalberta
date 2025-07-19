@@ -185,6 +185,29 @@ to get the estimated distribution function
 \(p\sim\frac{\sum_{k=1}^{N}p_k}{N}\)
 
 
+\section{simulation of the heat equation}
+The equation will have a form of the following,
+if we only care about the wenier term.
+\[
+    \dot{\mathbf{X}} =  \epsilon\boldsymbol{\eta}(t)
+\]
+if we consider the probabilistic distribution function
+over time. We have.
+\[
+    \frac{\partial p}{\partial t} = \frac{\epsilon^2}{2} \cdot \Delta p
+\]
+This is a heat equaiton.
+
+We have a second method which is the
+Euler-Maruyama method which we sample
+the initial value through distribution
+\(p(x,0)\) and do the Euler-Maruyama
+method to get a lot solution
+\(x_k(t)\) then the distribution of
+\(x_k(t)\) should be equation to
+\(p(x,t)\)
+
+
 
 
 
