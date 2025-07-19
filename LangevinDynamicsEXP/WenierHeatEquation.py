@@ -7,11 +7,11 @@ from PathManager import PathManager
 from FCN import FCN
 
 
-T = (0, 0.4)
+T = (0, 0.1)
 X = (0, 1)
 ε = 1
-NT = 40
-NX = 40
+NT = 100
+NX = 200
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
@@ -33,7 +33,7 @@ pm = PathManager()
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
 p = load(pm.get_data_path("p", ".ntdt"), weights_only=False)
-# p = FCN(2, 1, 16, 16)
+# p = FCN(2, 1, 16, 4)
 p.to("cuda")
 """p, p(x,t), probabilistic distribution over time
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -122,7 +122,7 @@ print("aglk", d2p_dx2.shape, d1p_dt1.shape, sep="\n")
 """
 # optimizer = Adam(p.parameters(), lr=5e-5)
 # mse = nn.MSELoss()
-for i in range(10000):
+for i in range(5000):
     optimizer.zero_grad()
     d0p0 = vmap(p0)(mx[:, 0])
     d0p = vmap(p)(dxt0[:, 0, :]).view(NX)
@@ -333,6 +333,42 @@ plt.close()
 # """
 # ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 # """
+d0p0 = vmap(p0)(x)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(x, d0p0.detach().cpu() * 1.3)
+ax.set_ylim(0, 1.3)
+ax.set_xlim(0, 1)
+plt.title("p(x,0)")
+plt.savefig(pm.get_data_path("p(x,0)", ".png"))
+plt.close()
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+d0px1 = vmap(vmap(p))(dxt0)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(x, d0px1[:, -1, :].detach().cpu().view(x.shape) * 1.3)
+ax.set_ylim(0, 1.3)
+ax.set_xlim(0, 1)
+plt.title("p(x,1)")
+plt.savefig(pm.get_data_path("p(x,1)", ".png"))
+plt.close()
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(x, d0p0.detach().cpu() * 1.3)
+ax.plot(x, d0px1[:, -1, :].detach().cpu().view(x.shape) * 1.3)
+ax.set_ylim(0, 1.3)
+ax.set_xlim(0, 1)
+plt.title("p(x,1+0)")
+plt.savefig(pm.get_data_path("p(x,1+0)", ".png"))
+plt.close()
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
 save(p, pm.get_data_path("p", ".ntdt"))
 """save
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
