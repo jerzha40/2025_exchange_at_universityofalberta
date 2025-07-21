@@ -16,7 +16,11 @@
 
 % Title and author info
 \title{Makes drones in cirle Experiments Report}
-\author{Zhang Jinrui\thanks{alternative email:zhangjr1022@mails.jlu.edu.cn} \\ \texttt{jerryzhang40@gmail.com}}
+\author{
+Zhang Jinrui\thanks{alternative email:zhangjr1022@mails.jlu.edu.cn} \\ \texttt{jerryzhang40@gmail.com}
+\\Su Zinan \\ \texttt{suzinan20050803@aliyun.com}
+\\Xu Haoran\thanks{alternative email:Xuhr1023@mails.jlu.edu.cn} \\ \texttt{haoranxu288@gmail.com}
+}
 
 \date{20250720}  % Empty date; optional, you can also specify a date here
 
@@ -176,6 +180,104 @@ edges, and this case It will obviously form a Unicyclic Graph.
 
 Which is a tree if we treat all the point on the
 loop as the same point.
+
+\section{Zinan Su's approach}
+\subsection{notations \& equations}
+safe collide radius is \(d_s\)
+\[
+    \sigma=2d_s
+\]
+\(NUM\) is the total number of the drones.
+And then we want the following dynamic system
+\[\begin{bmatrix}
+        \frac{d\vec{p_i}}{dt} \\
+        \frac{d\vec{v_i}}{dt}
+    \end{bmatrix}=
+    \begin{bmatrix}
+        \vec{v_i} \\
+        \vec{a_i}
+    \end{bmatrix}
+\]
+circle origin is a function
+\[
+    c=\frac{1}{NUM}\sum_{k=1}^{NUM}p_k
+\]
+Four constants.
+\[
+    k_p=
+\]
+\[
+    k_d=
+\]
+\[
+    k_v=
+\]
+\[
+    k_r=
+\]
+\[
+    R^*=\frac{1}{NUM}\sum_{k=1}^{NUM}p_k(0)-c(0)
+\]
+\[
+    v_d=\frac{1}{NUM}\sum_{k=1}^{NUM}\|v_k(0)\|
+\]
+and
+\[
+    r_i=p_i-c
+\]
+\[
+    d_i=\|r_i\|
+\]
+\[
+    \hat{r_i}=\frac{r_i}{d_i}
+\]
+\[
+    \hat{\theta_i}=\mathbb{M}_\theta r_i
+\]
+\[
+    \mathbb{M}_\theta=
+    \begin{bmatrix}
+        0  & 1 \\
+        -1 & 0
+    \end{bmatrix}
+\]
+\[
+    {v_{i}}_{\parallel}=\hat{r_i}\cdot v_i
+\]
+\[
+    {v_{i}}_{\perp}=\hat{\theta_i}\cdot v_i
+\]
+\[
+    U(r)=k_re^{-\frac{r}{2\sigma^2}}
+\]
+\[
+    U_{ij}=U(\|p_i-p_j\|)
+\]
+\[
+    \vec{u_i}_1=[-k_p(d_i-R^*)-k_d{v_{i}}_{\parallel}]\hat{r_i}
+\]
+\[
+    \vec{u_i}_2=[-k_v({v_{i}}_{\perp}-v_d)]\hat{\theta_i}
+\]
+\[
+    \vec{u_i}_3=\sum_{\forall k\neq i}(-\nabla_{p_i}U_{ij})
+\]
+\[
+    \vec{u_i}=\vec{u_i}_1+\vec{u_i}_2+\vec{u_i}_3
+\]
+
+\subsection{analysis}
+\(c\) is air resistance constant.
+\[
+    m\frac{d^2 \vec{p_i}}{dt^2}+c\|\frac{d\vec{p_i}}{dt}\|\frac{d\vec{p_i}}{dt}=u_i
+\]
+\subsection{some constants calculation}
+\(c\) is air resistance constant.
+\[
+    m\frac{d^2 \vec{p_i}}{dt^2}+c\|\frac{d\vec{p_i}}{dt}\|\frac{d\vec{p_i}}{dt}=u_i
+\]
+
+
 
 \bibliographystyle{plain}  % or another style like unsrt, IEEEtran, etc.
 \bibliography{references}  % references.bib is the file name

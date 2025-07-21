@@ -32,8 +32,8 @@ print("Accelerations (a):\n", a)
 
 def draw_configuration(d, v, a, name):
     plt.figure(figsize=(6, 6))
-    plt.xlim(-1, 2)
-    plt.ylim(-1, 2)
+    plt.xlim(0 - 5, 1 + 5)
+    plt.ylim(0 - 5, 1 + 5)
     plt.gca().set_aspect("equal")
     """
     ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
