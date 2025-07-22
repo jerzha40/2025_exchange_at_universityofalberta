@@ -1,8 +1,10 @@
 \documentclass{article}
+% \documentclass[UTF8]{ctexart}
 \usepackage{amsmath,amssymb,amsfonts}  % For math symbols and fonts
 \usepackage{graphicx}                   % For including images
 \usepackage{hyperref}                   % For hyperlinks
 \usepackage{cite}                       % For citations
+\usepackage[UTF8]{ctex}  % 注意，不是 \documentclass[UTF8]{ctexart}
 
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -267,11 +269,106 @@ and
 \]
 
 \subsection{analysis}
-\(c\) is air resistance constant.
-\[
-    m\frac{d^2 \vec{p_i}}{dt^2}+c\|\frac{d\vec{p_i}}{dt}\|\frac{d\vec{p_i}}{dt}=u_i
-\]
+考虑带阻力的动力方程
+\begin{equation*}
+    m\frac{\mathrm{d}^2\boldsymbol{p}_i}{\mathrm{d}t^2}+c\left\|\frac{\mathrm{d}\boldsymbol{p}_i}{\mathrm{d}t}\right\|\frac{\mathrm{d}\boldsymbol{p}_i}{\mathrm{d}t}=\boldsymbol{u}_i,
+\end{equation*}
+其中 $m$ 为质量, $c$ 为阻力系数, 即
+\begin{align}
+    \frac{\mathrm{d}\boldsymbol{X}}{\mathrm{d}t}=\boldsymbol{F}(\boldsymbol{X}),
+\end{align}
+其中
+\begin{equation*}
+    \boldsymbol{X}=\binom{\boldsymbol{p}}{\boldsymbol{v}}\in\mathbb{R}^{40},\ \boldsymbol{p}=\begin{pmatrix}
+        \boldsymbol{p}_1 \\\vdots\\\boldsymbol{p}_{10}
+    \end{pmatrix},\ \boldsymbol{v}=\begin{pmatrix}
+        \boldsymbol{v}_1 \\\vdots\\\boldsymbol{v}_{10}
+    \end{pmatrix},\ \boldsymbol{F}(\boldsymbol{X})=\binom{\boldsymbol{v}}{m^{-1}(\boldsymbol{u}-c\|\boldsymbol{v}\|\boldsymbol{v})}.
+\end{equation*}
+易知质心 $\boldsymbol{c}(\boldsymbol{X}),\|\boldsymbol{r}_i\|,\widehat{\boldsymbol{r}_i},\mathit{\Phi}$ 均为 Lipschitz 连续函数, 且初值条件满足
+\begin{equation*}
+    \min_{i\ne j}\|\boldsymbol{p}_i(0)-\boldsymbol{p}_j(0)\|>d_s>0.
+\end{equation*}
+由 Picard 定理可知方程 (1) 的解存在且唯一, 解为
+\begin{equation*}
+    \boldsymbol{X}(t)=\boldsymbol{X}(0)+\int_0^t\boldsymbol{F}(\boldsymbol{X}(s))\mathrm{d}s,
+\end{equation*}
+即
+\begin{align*}
+     & \boldsymbol{v}_i(t)=\boldsymbol{v}_i(0)+\int_0^t\left[m^{-1}\boldsymbol{u}_i(\boldsymbol{X}(s))-\frac{c}{m}\|\boldsymbol{v}_i(s)\|\boldsymbol{v}_i(s)\right]\mathrm{d}s, \\
+     & \boldsymbol{p}_i(t)=\boldsymbol{p}_i(0)+\int_0^t\boldsymbol{v}_i(s)\mathrm{d}s.
+\end{align*}
+下面证明防撞性. 定义
+\begin{align*}
+     & \mathit{\Psi}(d)=k_r\exp\left\{-\frac{(d-d_s)^2}{2\sigma^2}\right\},                                                                      \\
+     & \mathit{\Phi}(d)=-\frac{\mathrm{d}\mathit{\Psi}}{\mathrm{d}d}=\frac{k_r}{\sigma^2}\exp\left\{-\frac{(d-d_s)^2}{2\sigma^2}\right\}(d-d_s), \\
+     & E_{ij}(t)=\frac{1}{2}\left(\frac{\mathrm{d}d_{ij}}{\mathrm{d}t}\right)^2+\psi(d_{ij}(t)),
+\end{align*}
+其中 $d_{ij}(t)=\|\boldsymbol{p}_i(t)-\boldsymbol{p}_j(t)\|.$ 则系统能量为
+\begin{equation*}
+    \mathcal{E}(t)=\sum_{1\leqslant i<j\leqslant N}E_{ij}(t).
+\end{equation*}
+而
+\begin{equation*}
+    \frac{\mathrm{d}E_{ij}}{\mathrm{d}t}=\frac{\mathrm{d}d_{ij}}{\mathrm{d}t}\cdot\frac{\mathrm{d}^2d_{ij}}{\mathrm{d}t^2}+\mathit{\Phi}(d_{ij})\frac{\mathrm{d}d_{ij}}{\mathrm{d}t},
+\end{equation*}
+\begin{equation}
+    \frac{\mathrm{d}^2d_{ij}}{\mathrm{d}t^2}=\frac{1}{d_{ij}}\left[\|\boldsymbol{v}_i-\boldsymbol{v}_j\|^2+(\boldsymbol{p}_i-\boldsymbol{p}_j)\cdot(\boldsymbol{u}_i-\boldsymbol{u}_j)-\left(\frac{\mathrm{d}d_{ij}}{\mathrm{d}t}\right)^2\right],
+\end{equation}
+其中 $\boldsymbol{u}_i=\dot{\boldsymbol{v}_i}.$ 对于 $\boldsymbol{u}_i$, 有
+\begin{align*}
+    \boldsymbol{u}_i=\frac{1}{m}[-k_p(d_i-R^*)\widehat{\boldsymbol{r}_i}-k_dv_{r,i}\widehat{\boldsymbol{r}_i}-k_v(v_{\theta,i}-v_d)\hat{\boldsymbol{\theta_i}}]+\frac{1}{m}\sum_{k\ne i}\mathit{\Phi}(d_{ik})(\boldsymbol{p}_i-\boldsymbol{p}_k)=:\boldsymbol{u}_{i_1}+\boldsymbol{u}_{i_2}.
+\end{align*}
+设 $\|\boldsymbol{u}_{i_1}-\boldsymbol{u}_{j_1}\|\leqslant L.$ 取
+\begin{equation*}
+    k_r>L\sigma^2\mathrm{e}^{\frac{1}{2}}\max\left\{\frac{1}{d_s},\frac{1}{\displaystyle\min_{k\ne l}d_{kl}(0)}\right\},
+\end{equation*}
+则当 $d_{ij}\leqslant d_s+\sigma$ 时, 有
+\begin{equation*}
+    \|\boldsymbol{u}_{i_2}-\boldsymbol{u}_{j_2}\|>2L.
+\end{equation*}
+于是
+\begin{equation*}
+    (\boldsymbol{p}_i-\boldsymbol{p}_j)\cdot(\boldsymbol{u}_i-\boldsymbol{u}_j)\geqslant\|\boldsymbol{u}_{i_2}-\boldsymbol{u}_{j_2}\|d_{ij}-Ld_{ij}>Ld_{ij}.
+\end{equation*}
+代入 (2) 式有
+\begin{equation*}
+    \frac{\mathrm{d}E_{ij}}{\mathrm{d}t}\geqslant\frac{\mathrm{d}d_{ij}}{\mathrm{d}t}(L+\mathit{\Phi}(d_{ij}))>0.
+\end{equation*}
+由此即知
+\begin{equation*}
+    \frac{\mathrm{d}\mathcal{E}}{\mathrm{d}t}\geqslant-\kappa\mathcal{E}(t),
+\end{equation*}
+其中 $\kappa>0$ 为常数. 而
+\begin{align*}
+     & \mathcal{E}(0)\geqslant\sum_{i<j}\mathit{\Psi}(d_{ij}(0))>\psi(d_s+\sigma)\cdot\binom{N}{2}, \\
+     & \mathcal{E}(t)\geqslant\mathcal{E}(0)\mathrm{e}^{-\kappa t}>0,                               \\
+     & \mathit{\Psi}(d_{ij}(t))\leqslant E_{ij}(t)\leqslant\mathcal{E}(t).
+\end{align*}
+由 $\mathit{\Psi}$ 严格单调递减可知
+\begin{equation*}
+    d_{ij}(t)\geqslant\mathit{\Psi}^{-1}(\mathcal{E}(t))>\mathit{\Psi}^{-1}(\mathcal{E}(0)\mathrm{e}^{-\kappa t}).
+\end{equation*}
+令 $t\to\infty,$ 有
+\begin{equation*}
+    \varliminf_{t\to\infty}d_{ij}(t)\geqslant\mathit{\Psi}^{-1}(0)=d_s.
+\end{equation*}
+故总是不会相撞.\par
+下面讨论收敛性, 即讨论系统收敛至
+\begin{equation*}
+    \mathcal{S}=\{\|\boldsymbol{r}_i\|=R,\boldsymbol{v}_i\cdot\widehat{\boldsymbol{r}_i}=0,\|\boldsymbol{v}_i\|=v_d\}.
+\end{equation*}
+构造 Lyapunov 函数
+\begin{equation*}
+    V=\frac{1}{2}\sum_{i=1}^N[k_p(d_i-R)^2+\|\boldsymbol{v}_i-v_d\widehat{\boldsymbol{\theta}_i}\|^2]+\sum_{i<j}\mathit{\Psi}(d_{ij}),
+\end{equation*}
+则
+\begin{equation*}
+    \dot{V}=-\sum_{i}k_dv_{r,i}^2-\sum_ik_v(v_{\theta,i}-v_d)^2-\sum_ic\|\boldsymbol{v}_i\|^3\leqslant0,
+\end{equation*}
+故方程渐进收敛至 $\mathcal{S}$.
 \subsection{some constants calculation}
+undergoing
 \(c\) is air resistance constant.
 \[
     m\frac{d^2 \vec{p_i}}{dt^2}+c\|\frac{d\vec{p_i}}{dt}\|\frac{d\vec{p_i}}{dt}=u_i
