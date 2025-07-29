@@ -32,7 +32,7 @@ logger.info(f"START")
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
-N = 2
+N = 3
 f = np.random.random([2**N, 2**N])
 logger.info(f"f={f}")
 """
@@ -70,11 +70,10 @@ logger.info(f"f_hat[0][0]={f_hat[0][0]}")
 """
 
 
-def DEC2D(a, b, l, r, j, k, m, n, f_hat, f):
-    if b - a == 1 or r - l == 1:
+def DEC2DY(a, b, l, r, j, k, m, n, f_hat, f):
+    if r - l == 1:
         return
     c = 0
-    # print(2**j + k, 2**m + n)
     for i in range(a, b):
         for s in range(l, r):
             c += (
@@ -85,10 +84,17 @@ def DEC2D(a, b, l, r, j, k, m, n, f_hat, f):
                 * ψ[2**m * s - 2**N * n]
             )
     f_hat[2**j + k][2**m + n] = c
-    DEC2D(a, b, l, (l + r) // 2, j, k, m + 1, n * 2 + 0, f_hat, f)
-    DEC2D(a, b, (l + r) // 2, r, j, k, m + 1, n * 2 + 1, f_hat, f)
-    DEC2D(a, (a + b) // 2, l, r, j + 1, k * 2 + 0, m, n, f_hat, f)
-    DEC2D((a + b) // 2, b, l, r, j + 1, k * 2 + 1, m, n, f_hat, f)
+    DEC2DY(a, b, l, (l + r) // 2, j, k, m + 1, n * 2 + 0, f_hat, f)
+    DEC2DY(a, b, (l + r) // 2, r, j, k, m + 1, n * 2 + 1, f_hat, f)
+    pass
+
+
+def DEC2DX(a, b, j, k, f_hat, f):
+    if b - a == 1:
+        return
+    DEC2DY(a, b, 0, 2**N, j, k, 0, 0, f_hat, f)
+    DEC2DX(a, (a + b) // 2, j + 1, k * 2 + 0, f_hat, f)
+    DEC2DX((a + b) // 2, b, j + 1, k * 2 + 1, f_hat, f)
 
 
 def DEC2DEdge(a, b, j, k, f_hat, f):
@@ -108,7 +114,7 @@ def DEC2DEdge(a, b, j, k, f_hat, f):
 
 logger.info(f"f_hat={f_hat}")
 DEC2DEdge(0, 2**N, 0, 0, f_hat, f)
-DEC2D(0, 2**N, 0, 2**N, 0, 0, 0, 0, f_hat, f)
+DEC2DX(0, 2**N, 0, 0, f_hat, f)
 logger.info(f"f_hat={f_hat}")
 """[a,b) c_{j,k}
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -117,11 +123,10 @@ f_rec = np.outer(φ, φ) * f_hat[0][0]
 logger.info(f"f_rec_0={f_rec}")
 
 
-def REC2D(a, b, l, r, j, k, m, n, f_hat, f):
-    if b - a == 1 or r - l == 1:
+def REC2DY(a, b, l, r, j, k, m, n, f_hat, f):
+    if r - l == 1:
         return
     c = f_hat[2**j + k][2**m + n]
-    print(2**j + k, 2**m + n)
     for i in range(a, b):
         for s in range(l, r):
             f[i][s] += (
@@ -131,10 +136,17 @@ def REC2D(a, b, l, r, j, k, m, n, f_hat, f):
                 * np.sqrt(2**m)
                 * ψ[2**m * s - 2**N * n]
             )
-    REC2D(a, b, l, (l + r) // 2, j, k, m + 1, n * 2 + 0, f_hat, f)
-    REC2D(a, b, (l + r) // 2, r, j, k, m + 1, n * 2 + 1, f_hat, f)
-    REC2D(a, (a + b) // 2, l, r, j + 1, k * 2 + 0, m, n, f_hat, f)
-    REC2D((a + b) // 2, b, l, r, j + 1, k * 2 + 1, m, n, f_hat, f)
+    REC2DY(a, b, l, (l + r) // 2, j, k, m + 1, n * 2 + 0, f_hat, f)
+    REC2DY(a, b, (l + r) // 2, r, j, k, m + 1, n * 2 + 1, f_hat, f)
+    pass
+
+
+def REC2DX(a, b, j, k, f_hat, f):
+    if b - a == 1:
+        return
+    REC2DY(a, b, 0, 2**N, j, k, 0, 0, f_hat, f)
+    REC2DX(a, (a + b) // 2, j + 1, k * 2 + 0, f_hat, f)
+    REC2DX((a + b) // 2, b, j + 1, k * 2 + 1, f_hat, f)
 
 
 def REC2DEdge(a, b, j, k, f_hat, f):
@@ -151,7 +163,7 @@ def REC2DEdge(a, b, j, k, f_hat, f):
 
 
 REC2DEdge(0, 2**N, 0, 0, f_hat, f_rec)
-REC2D(0, 2**N, 0, 2**N, 0, 0, 0, 0, f_hat, f_rec)
+REC2DX(0, 2**N, 0, 0, f_hat, f_rec)
 logger.info(f"f_rec={f_rec}")
 logger.info(f"f={f}")
 """
