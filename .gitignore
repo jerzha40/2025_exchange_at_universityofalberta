@@ -209,3 +209,5 @@ __marimo__/
 #latex
 *.synctex.gz
 *.bbl
+*.snm
+*.nav
