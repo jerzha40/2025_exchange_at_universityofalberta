@@ -87,6 +87,81 @@ to automatically emergent a circle rounding pattern.
 
 question: framelet multiresolution(sacle function and funciont)
 
+\section{Haar 1D sequence Decomposition}
+For a \(2^{N}\) points sequence, the mother
+wavelet is
+\[
+    \psi(n) =
+    \begin{cases}
+        0,                     & \text{if } n < 0               \\
+        \frac{1}{\sqrt{2^N}},  & \text{if } 0\leq n < 2^{N-1}   \\
+        \frac{-1}{\sqrt{2^N}}, & \text{if } 2^{N-1}\leq n<2^{N} \\
+        0,                     & \text{if } n >= 2^N            \\
+    \end{cases}
+\]
+We have
+\[
+    \langle\psi,\psi\rangle=\sum_{k=0}^{2^N-1}\frac{1}{2^N}=1
+\]
+For other derived basis we use
+this discretized formula
+\[
+    \psi_{j,k}(n)=\sqrt{2^j}\psi(2^j(n-2^{N-j}k)) , 0\leq j\leq N-1
+    , k<=2^j-1
+\]
+\[
+    \left[
+        \begin{array}{cccc}
+            \psi_{0,0}   & 0            & \cdots     & 0                    \\
+            \psi_{1,0}   & \psi_{1,1}   & \cdots     & 0                    \\
+            \psi_{2,0}   & \cdots       & \psi_{2,3} & 0                    \\
+            \vdots       & \vdots       & \ddots     & 0                    \\
+            \psi_{N-1,0} & \psi_{N-1,1} & \cdots     & \psi_{N-1,2^{N-1}-1}
+        \end{array}
+        \right]
+\]
+And a average basis as following
+\[
+    \phi(n) =
+    \begin{cases}
+        0,                    & \text{if } n < 0               \\
+        \frac{1}{\sqrt{2^N}}, & \text{if } 0\leq n < 2^{N-1}   \\
+        \frac{1}{\sqrt{2^N}}, & \text{if } 2^{N-1}\leq n<2^{N} \\
+        0,                    & \text{if } n >= 2^N            \\
+    \end{cases}
+\]
+there are
+\[
+    1+\sum_{k=0}^{N-1}2^k=2^N
+\]
+basis.
+which will be \(2^N\) coefficients
+then every \(2^N\) sequence \(f(n)\) can be written as
+\[
+    f(n)=a\phi(n)+\sum_{j=0}^{N-1}\sum_{k=0}^{2^j-1}c_{j,k}\psi_{j,k}
+\]
+Then each coefficients can be obtain by inner product.
+\[
+    a=\langle f(n),\phi(n)\rangle
+\]
+\[
+    c_{j,k}=\langle f(n),\psi_{j,k}(n)\rangle
+\]
+The inner product of two sequence are define as follow.
+\[
+    \langle f(n),g(n)\rangle=\sum_{k=0}^{2^N-1}f(k)g(k)
+\]
+the transformed sequence \(\hat{f}(n)\)
+satisfies
+\[
+    c_{j,k}=\hat{f}(2^j+k)
+\]
+\[
+    a=\hat{f}(0)
+\]
+
+
+
 \section{Fractal Approach}
 For a mother wavelet \(\psi(x)\) satisfied
 following property.
@@ -112,7 +187,7 @@ We can decomposed it in to the form
 And the coefficients can obtained by
 the following inner product.
 \[
-    \langle f,\psi_{j,k}\rangle=1
+    \langle f,\psi_{j,k}\rangle=c_{j,k}
 \]
 
 For a function restricted on
