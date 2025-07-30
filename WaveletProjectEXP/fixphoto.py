@@ -45,4 +45,4 @@ def convert_image(image_path, output_path, N, save_matrix=False, matrix_save_pat
 
 
 # 示例调用（使用时替换为实际路径和 N 值）
-convert_image("Noisy-Image.png", "output_image.png", N)
+convert_image("fig/Noisy-Image.png", "output_image.png", N)
