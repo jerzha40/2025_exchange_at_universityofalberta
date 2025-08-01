@@ -112,13 +112,13 @@ def HaarDWTREC2D(f_hat):
     f = f_hat[0][0]
     for i in range(N):
         f = np.kron(f, φφ)
-        logger.info(f"f={f}")
+        # logger.info(f"f={f}")
         f += np.kron(
             f_hat[2 ** (0 + i) : 2 ** (1 + i), 2 ** (0 + i) : 2 ** (1 + i)], ψψ
         )
         f += np.kron(f_hat[0 : 2 ** (0 + i), 2 ** (0 + i) : 2 ** (1 + i)], φψ)
         f += np.kron(f_hat[2 ** (0 + i) : 2 ** (1 + i), 0 : 2 ** (0 + i)], ψφ)
-        logger.info(f"f={f}")
+        # logger.info(f"f={f}")
     return f
 
 
@@ -137,9 +137,48 @@ logger.info(f"IPUT_f={IPUT_f}")
 # """
 # ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 # """
+P = 100
+logger.info(
+    f"OPUT_f[2 ** (N - 1) : 2 ** (N), 0 : 2 ** (N - 1)]={OPUT_f[2 ** (N - 1) : 2 ** (N), 0 : 2 ** (N - 1)]}"
+)
+for i in range(3):
+    threshold = np.percentile(
+        abs(OPUT_f[2 ** (N - 1 - i) : 2 ** (N - i), 2 ** (N - 1 - i) : 2 ** (N - i)]),
+        P * i / i,
+    )
+    OPUT_f[2 ** (N - 1 - i) : 2 ** (N - i), 2 ** (N - 1 - i) : 2 ** (N - i)] = np.where(
+        abs(OPUT_f[2 ** (N - 1 - i) : 2 ** (N - i), 2 ** (N - 1 - i) : 2 ** (N - i)])
+        < threshold,
+        OPUT_f[2 ** (N - 1 - i) : 2 ** (N - i), 2 ** (N - 1 - i) : 2 ** (N - i)],
+        0,
+    )
+    threshold = np.percentile(
+        abs(OPUT_f[0 : 2 ** (N - 1 - i), 2 ** (N - 1 - i) : 2 ** (N - i)]), P * i / i
+    )
+    OPUT_f[0 : 2 ** (N - 1 - i), 2 ** (N - 1 - i) : 2 ** (N - i)] = np.where(
+        abs(OPUT_f[0 : 2 ** (N - 1 - i), 2 ** (N - 1 - i) : 2 ** (N - i)]) < threshold,
+        OPUT_f[0 : 2 ** (N - 1 - i), 2 ** (N - 1 - i) : 2 ** (N - i)],
+        0,
+    )
+    threshold = np.percentile(
+        abs(OPUT_f[2 ** (N - 1 - i) : 2 ** (N - i), 0 : 2 ** (N - 1 - i)]), P * i / i
+    )
+    OPUT_f[2 ** (N - 1 - i) : 2 ** (N - i), 0 : 2 ** (N - 1 - i)] = np.where(
+        abs(OPUT_f[2 ** (N - 1 - i) : 2 ** (N - i), 0 : 2 ** (N - 1 - i)]) < threshold,
+        OPUT_f[2 ** (N - 1 - i) : 2 ** (N - i), 0 : 2 ** (N - 1 - i)],
+        0,
+    )
+    logger.info(
+        f"OPUT_f[2 ** (N - 1) : 2 ** (N-i), 0 : 2 ** (N - 1)]={OPUT_f[0 : 2 ** (N - 1 - i), 2 ** (N - 1 - i) : 2 ** (N - i)]}"
+    )
+RCON_f = HaarDWTREC2D(OPUT_f)
+logger.info(f"OPUT_f={OPUT_f}")
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
 # filtered = np.zeros_like(OPUT_f)
-# filtered[0 : 256, 0 : 256] += OPUT_f[
-#     0 : 256, 0 : 256
+# filtered[0 : 128, 0 : 128] += OPUT_f[
+#     0 : 128, 0 : 128
 # ]
 # RCON_f_filtered = HaarDWTREC2D(filtered)
 # """
