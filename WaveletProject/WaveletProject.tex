@@ -11,6 +11,7 @@
 
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{array}
 
 \usepackage{amsthm}
 % Define new theorem-like environments
@@ -160,6 +161,213 @@ satisfies
     a=\hat{f}(0)
 \]
 
+\section{Iamge pre-processing}
+\subsection{Overview}
+\subsubsection{Background and Objectives}
+In the fields of digital image processing and computer vision, standardizing image dimensions is a fundamental requirement in the preprocessing stage. This program aims to achieve the following core objectives:
+\begin{enumerate}
+    \item Convert any input image into a grayscale image of size \(\mathbf{2^N \times 2^N}\) pixels (where \(N\) is an integer specified by the user). This meets the need for uniform dimensions in specific scenarios (e.g., inputs for deep learning models, academic experiment comparisons). It also lays a foundation for subsequent wavelet transform applications, as standardized dimensions enable more efficient and accurate wavelet-based processing.
+    \item Support the export and visualization of image matrices. This facilitates in-depth image data processing for numerical analysis and machine learning tasks. It also provides a structured format for wavelet transform operations, simplifying the extraction of frequency domain features.
+\end{enumerate}
+
+\subsubsection{Dependency Library Description}
+The program relies on the following Python libraries. Their functions and installation commands are as follows:
+
+\begin{table}[ht]
+    \centering
+    % 关键优化：用 >{\arraybackslash}p{宽度} 让文本自动换行
+    \begin{tabular}{|>{\arraybackslash}p{2cm}|>{\arraybackslash}p{7cm}|>{\arraybackslash}p{3.5cm}|}
+        \hline
+        \textbf{Library Name} & \textbf{Function Description}                                                                                                                                                    & \textbf{Installation Command}       \\
+        \hline
+        Pillow (PIL)          & Image reading, format conversion, scaling, and saving. Provides basic image processing capabilities essential for pre-wavelet-transform image transformation.                    & \texttt{pip install pillow}         \\
+        \hline
+        NumPy                 & Matrix-based conversion and numerical operations for image data. Critical for representing images as matrices (a prerequisite for wavelet transform calculations).               & \texttt{pip install numpy}          \\
+        \hline
+        math                  & Built-in Python mathematical operations (used for power calculations to determine dimensions). Assists in standardizing image size, which impacts wavelet transform performance. & No additional installation required \\
+        \hline
+    \end{tabular}
+    \caption{Dependency Library Details}
+\end{table}
+
+
+\subsection{Program Design and Implementation}
+\subsubsection{Core Functional Modules}
+The program implements the complete process via the \texttt{convert\_image} function, consisting of 5 core steps. These steps not only enable basic image conversion but also prepare images for potential wavelet transform applications:
+
+\begin{enumerate}
+    \item \textbf{Image Reading and Grayscale Conversion}:
+          Use \texttt{Image.open} from the Pillow library to open an image, then convert it to a single-channel grayscale image via \texttt{convert('L')} (pixel values range from 0 to 255, with 0 as black and 255 as white). Grayscale images simplify wavelet transform calculations by reducing data complexity while preserving essential structural information.
+
+    \item \textbf{Target Size Calculation}:
+          Calculate the target output image side length as \texttt{target\_size = 2 ** N} based on the user-input \(N\) (e.g., \(N = 3\) yields an \(8 \times 8\) pixel image). Standardized dimensions align with wavelets’ multi-resolution analysis characteristics, enabling consistent decomposition and reconstruction.
+
+    \item \textbf{Aspect-Ratio-Preserving Scaling}:
+          Compare the original image’s width and height, dynamically compute the scaling ratio to ensure at least one side reaches the target size, and scale using the LANCZOS interpolation algorithm (a high-fidelity method that preserves image details). Maintaining details is critical for accurate wavelet transform results, as wavelets are sensitive to fine-scale features.
+
+    \item \textbf{Centered Cropping}:
+          Compute cropping coordinates \((\text{left}, \text{top}, \text{right}, \text{bottom})\) and perform centered cropping on the scaled image to ensure a strict \(\mathbf{2^N \times 2^N}\) output size. This step ensures image dimensions suit wavelet transform requirements (wavelet operations typically need consistent input sizes).
+
+    \item \textbf{Result Saving and Output}:
+          Save the cropped image file and convert the image to a 2D matrix using NumPy, supporting matrix data saving and console output. The matrix format is compatible with wavelet transform processing, enabling seamless integration of subsequent wavelet-based algorithms.
+\end{enumerate}
+
+\subsubsection{Complete Code Implementation}
+The following Python code (runnable as-is) performs basic image conversion and prepares images for wavelet transform via standardized matrix representation:
+
+% \begin{lstlisting}[caption={Image Conversion Core Code}, label=code:image-convert]
+% import math
+% from PIL import Image
+% import numpy as np
+
+% def convert_image(image_path, output_path, N, save_matrix=False, matrix_save_path=None):
+%     # 1. Image reading and grayscale conversion
+%     image = Image.open(image_path).convert('L')
+%     width, height = image.size
+
+%     # 2. Target size calculation
+%     target_size = 2 ** N
+
+%     # 3. Aspect-ratio-preserving scaling
+%     if width > height:
+%         new_height = target_size
+%         new_width = int(width * (target_size / height))
+%     else:
+%         new_width = target_size
+%         new_height = int(height * (target_size / width))
+%     resized_image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+%     # 4. Centered cropping
+%     left = (new_width - target_size) // 2
+%     top = (new_height - target_size) // 2
+%     right = left + target_size
+%     bottom = top + target_size
+%     cropped_image = resized_image.crop((left, top, right, bottom))
+
+%     # 5. Result saving and output
+%     cropped_image.save(output_path)
+%     image_matrix = np.array(cropped_image)
+%     print(f"Conversion completed! Output size: {target_size}x{target_size}")
+%     print("Image matrix preview (first 5 rows):")
+%     print(image_matrix[:5])  
+
+%     if save_matrix and matrix_save_path:
+%         np.save(matrix_save_path, image_matrix)
+%         print(f"Image matrix saved to: {matrix_save_path}")
+
+% # Uncomment below to test (replace paths as needed)
+% # if __name__ == "__main__":
+% #     convert_image(
+% #         image_path="your_input_image.jpg", 
+% #         output_path="output_image.png", 
+% #         N=3,  
+% #         save_matrix=True, 
+% #         matrix_save_path="image_matrix.npy"
+% #     )
+% \end{lstlisting}
+
+\textbf{Code Key Logic Supplementary Explanation}:
+\begin{itemize}
+    \item \textbf{LANCZOS Interpolation}: Invoked via \texttt{Image.Resampling.LANCZOS}, it ensures high-fidelity scaling—critical for preserving wavelet-transform-relevant features (e.g., edges, textures).
+    \item \textbf{Matrix Saving}: The \texttt{np.save} function stores the image matrix as a \texttt{.npy} file, enabling reuse in wavelet transform workflows (e.g., import into MATLAB/Python analysis scripts).
+\end{itemize}
+
+
+\subsection{User Guide}
+\subsubsection{Parameter Configuration}
+When calling \texttt{convert\_image}, configure the following parameters:
+
+\begin{table}[ht]
+    \centering
+    % 关键优化：用 >{\arraybackslash}p{宽度} 让文本自动换行
+    \begin{tabular}{|>{\arraybackslash}p{2.5cm}|>{\arraybackslash}p{2cm}|>{\arraybackslash}p{7.5cm}|}
+        \hline
+        \textbf{Parameter Name} & \textbf{Type} & \textbf{Description}                                                                                                                            \\
+        \hline
+        \texttt{image\_path}    & String        & Input image path (e.g., \texttt{"input.jpg"}).                                                                                                  \\
+        \hline
+        \texttt{output\_path}   & String        & Output image save path (e.g., \texttt{"output.png"}).                                                                                           \\
+        \hline
+        \texttt{N}              & Integer       & Controls output size as \(\mathbf{2^N \times 2^N}\) (e.g., \(N = 5\) for \(32 \times 32\)). Critical for defining wavelet transform resolution. \\
+        \hline
+        \texttt{save\_matrix}   & Boolean       & Whether to save the image matrix (default: \texttt{False}). Saves time in wavelet transform preprocessing.                                      \\
+        \hline
+    \end{tabular}
+    \caption{Function Parameter Description}
+\end{table}
+
+\subsubsection{Example Call}
+The following example demonstrates \texttt{convert\_image} usage, producing wavelet-transform-ready images:
+
+% \begin{lstlisting}[caption={Example Call Code}, label=code:example]
+% import math
+% from PIL import Image
+% import numpy as np
+
+% N = int(input('enter the photo size: '))
+
+% def convert_image(image_path, output_path, N, save_matrix=False, matrix_save_path=None):
+%     # Repeated for completeness; same as core code
+%     image = Image.open(image_path).convert('L')
+%     width, height = image.size
+%     target_size = 2 ** N
+%     if width > height:
+%         new_height = target_size
+%         new_width = int(width * (target_size / height))
+%     else:
+%         new_width = target_size
+%         new_height = int(height * (target_size / width))
+%     resized_image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+%     left = (new_width - target_size) // 2
+%     top = (new_height - target_size) // 2
+%     right = left + target_size
+%     bottom = top + target_size
+%     cropped_image = resized_image.crop((left, top, right, bottom))
+%     cropped_image.save(output_path)
+%     image_matrix = np.array(cropped_image)
+%     print(f"Conversion completed! Output size: {target_size}x{target_size}")
+%     print("Image matrix preview (first 5 rows):")
+%     print(image_matrix[:5])  
+%     if save_matrix and matrix_save_path:
+%         np.save(matrix_save_path, image_matrix)
+%         print(f"Image matrix saved to: {matrix_save_path}")
+
+% # Replace with actual paths
+% convert_image(
+%     image_path="your_input_image.jpg", 
+%     output_path="output_image.png", 
+%     N=N, 
+%     save_matrix=True, 
+%     matrix_save_path="image_matrix.npy"
+% )
+% \end{lstlisting}
+
+\textbf{Running Process}:
+\begin{enumerate}
+    \item Enter \(N\) in the terminal (e.g., \texttt{3} for an \(8 \times 8\) image). This \(N\) influences wavelet transform granularity (different sizes enable multi-resolution analysis).
+    \item The program converts the image, outputting size info and the matrix. The matrix serves as direct input for wavelet transform functions.
+    \item If \texttt{save\_matrix} is enabled, the matrix saves as a \texttt{.npy} file for wavelet transform tasks.
+\end{enumerate}
+
+
+\subsection{Application Scenarios and Expansion Suggestions}
+\subsubsection{Typical Application Scenarios}
+\begin{enumerate}
+    \item \textbf{Academic Research}: Standardizes image sizes for uniform input in image recognition, style transfer, etc. Wavelet transform can further extract multi-scale features, aiding algorithm research.
+    \item \textbf{Teaching Demonstration}: Visualizes RGB-to-grayscale conversion and matrix representation. Can be extended to show wavelet transform’s frequency-domain decomposition.
+    \item \textbf{Data Preprocessing}: Prepares standardized image data for machine learning (e.g., MNIST-like datasets). Wavelet-based feature extraction enhances model input quality.
+\end{enumerate}
+
+\subsubsection{Function Expansion Suggestions}
+\begin{enumerate}
+    \item \textbf{Multi-Channel Support}: Add RGB processing to retain color information, enabling wavelet transform on color images.
+    \item \textbf{Batch Processing}: Automate multi-image conversion via folder traversal, streamlining large-scale wavelet transform workflows.
+    \item \textbf{Visualization Enhancement}: Integrate Matplotlib to compare original and converted images. Extend to visualize wavelet decomposition/reconstruction for intuitive validation.
+\end{enumerate}
+
+
+\subsection{Summary}
+This program converts images to \(\mathbf{2^N \times 2^N}\) grayscale format, balancing practicality and extensibility. Leveraging Pillow and NumPy, it meets basic image processing needs and provides standardized input for deep learning (e.g., TensorFlow, PyTorch). By outputting wavelet-transform-compatible matrices, it supports advanced image analysis. It serves as a foundation for entry-level image processing practice, academic experiments, and wavelet-integrated preprocessing pipelines.
 
 
 \section{Fractal Approach}
@@ -392,6 +600,7 @@ undergoing
 
 \subsection{target distance method:simulation}
 undergoing
+
 
 \section{Zinan Su's approach}
 \subsection{notations \& equations}
