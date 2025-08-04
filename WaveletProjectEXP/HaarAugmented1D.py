@@ -1,11 +1,12 @@
-import torch
-from torch import Tensor
+from torch.optim import Adam
+from torch import Tensor, nn
 from torch import rand, tensor, zeros_like
-from torch import sqrt, sum
+from torch import sqrt, sum, mean
 from PathManager import PathManager
 from HaarAugmentedUtility import HaarDecomp, HaarRecons
 from HaarAugmentedUtility import HaarDecompAug, HaarReconsAug
 from torch.nn.functional import normalize
+from HaarAugmentedNetwork import HAN
 
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -14,7 +15,7 @@ pm = PathManager()
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
-N: int = 3
+N: int = 10
 f: Tensor = rand(2**N)
 print("sflk", f, f.shape, sep="\n")
 """
@@ -77,5 +78,76 @@ print("glgs", sum(f**2), sep="\n")
 f_rec = HaarReconsAug(N, f_hat, Ψ, Φ)
 print("lfng", f, f_rec, sep="\n")
 """reconstruction success
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+"SEP"
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+δ = HAN(N)
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+# f = f.to("cuda")
+# δ.to("cuda")
+# """
+# ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# """
+optimizer = Adam(δ.parameters(), lr=5e-5)
+for itm in δ.parameters():
+    print("slgb", itm, sep="\n")
+    print(f"⟨Φ, Φ⟩={sum(itm**2,1)}")
+f_hat: Tensor = δ(f)
+print("lgbs", f_hat, mean(f_hat**2), mean(f**2), mean(f_hat**4), sep="\n")
+# mse = nn.MSELoss()
+for i in range(20000):
+    optimizer.zero_grad()
+
+    f_hat: Tensor = δ(f)
+
+    loss: Tensor = -mean(f_hat**4)
+    loss.backward()
+
+    optimizer.step()
+    if (i + 1) % 200 == 0:
+        print(f"{i:5d} {loss.tolist():5.2e}")
+f_hat: Tensor = δ(f)
+print("gslb", f_hat, mean(f_hat**2), mean(f**2), mean(f_hat**4), sep="\n")
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+import matplotlib.pyplot as plt
+
+plt.plot(f_hat.detach().numpy())
+plt.show()
+print("slbg", f.shape, δ.P.shape, sep="\n")
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+Φ = normalize(δ.P)
+Ψ = zeros_like(Φ)
+Ψ[:, 0] = Φ[:, 1]
+Ψ[:, 1] = -Φ[:, 0]
+f_rec = HaarReconsAug(N, f_hat, Ψ, Φ)
+print("bsgl", f, f_rec, sep="\n")
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+eps = 0.1
+mask = f_hat.abs() < eps
+f_hat[mask] = 0
+f_rec = HaarReconsAug(N, f_hat, Ψ, Φ)
+print(f"non-zero={2**N-sum(mask)}")
+print("glli", f_hat, sep="\n")
+print("gllk", f, f_rec, sep="\n")
+print("lsig", f - f_rec, mean((f - f_rec) ** 2), sep="\n")
+"""
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"""
+plt.plot(f_rec.detach().numpy())
+plt.plot(f.detach().numpy())
+plt.show()
+print("slbg", f.shape, δ.P.shape, sep="\n")
+"""
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """

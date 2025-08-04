@@ -24,9 +24,9 @@ def HaarRecons(N: int, f_hat: Tensor, ψ: Tensor, φ: Tensor):
     f = f_hat[0]
     for i in range(N):
         f = kron(f, φ)
-        print(f"slkd\nf={f}")
+        # print(f"slkd\nf={f}")
         f += kron(f_hat[2 ** (0 + i) : 2 ** (1 + i)], ψ)
-        print(f"hsgl\nf={f}")
+        # print(f"hsgl\nf={f}")
     return f
 
 
@@ -56,9 +56,9 @@ def HaarReconsAug(N: int, f_hat: Tensor, Ψ: Tensor, Φ: Tensor):
     f = f_hat[0]
     for i in range(N):
         f = kron(f, Φ[N - i - 1, :])
-        print(f"slkd\nf={f}")
+        # print(f"slkd\nf={f}")
         f += kron(f_hat[2 ** (0 + i) : 2 ** (1 + i)], Ψ[N - i - 1, :])
-        print(f"hsgl\nf={f}")
+        # print(f"hsgl\nf={f}")
     return f
 
 
