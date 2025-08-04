@@ -103,19 +103,141 @@ Mo Zian
 
 \section{Haar Compression Augmented}
 \begin{frame}
-    \frametitle{second title}
+    \frametitle{Basic Idea}
     \begin{itemize}
-        \item sdlfkj
-        \item sDF
-        \item sdf
+        \item \[
+                  \sum_{k=1}^{n}\hat{l}_k^4
+                  \leq
+                  (\sum_{k=1}^{n}\hat{l}_k^2)^2
+                  =
+                  (\sum_{k=1}^{n}l_k^2)^2
+              \]
+        \item \[
+                  \min_{\hat{l}_k\in l^2 st. \sum_{k=1}^{n}\hat{l}_k^2=\sum_{k=1}^{n}l_k^2}(-\sum_{k=1}^{n}\hat{l}_k^4)
+              \]
     \end{itemize}
 \end{frame}
 \begin{frame}
-    \frametitle{sfdfg}
+    \frametitle{Basic Idea}
     \begin{itemize}
-        \item sdlfkj
-        \item sDF
-        \item sdf
+        \item 	\begin{figure}
+                  \centering
+                  \includegraphics[width=0.8\textwidth]{fig/Wavelets_-_Filter_Bank.png}
+                  \caption{Cascading}
+                  \label{fig:Cascading}
+              \end{figure}
+        \item \[
+                  \min_{\Phi}(-\sum_{k=1}^{n}\hat{l}_k^4)
+              \]
+        \item Condense the energy to as less coefficients as possible.
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Results}
+    \begin{itemize}
+        \item
+              \begin{figure}[ht!]
+                  \centering
+                  \begin{minipage}{0.45\textwidth}
+                      \centering
+                      \includegraphics[width=0.9\textwidth]{fig/HaarAugmented1D_freq.png} % first figure itself
+                      \caption{Haar 2x2 filter bank random input. Compression Rate 0.2568}
+                      \label{fig:Haar}
+                  \end{minipage}\hfill
+                  \begin{minipage}{0.45\textwidth}
+                      \centering
+                      \includegraphics[width=0.9\textwidth]{fig/HaarAugmented1D_rec.png} % second figure itself
+                      \caption{Haar 2x2 filter bank random input.Total average energy loss 0.0009}
+                  \end{minipage}
+              \end{figure}
+              %   \begin{figure}
+              %       \centering
+              %       \includegraphics[width=0.8\textwidth]{fig/Wavelets_-_Filter_Bank.png}
+              %       \caption{Siakam won 2025 NBA eastern conference finals MVP}
+              %       \label{fig:Siakam}
+              %   \end{figure}
+        \item random sequence would take more information entropy so have a low compress rate.
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Results}
+    \begin{itemize}
+        \item
+              \begin{figure}[ht!]
+                  \centering
+                  \begin{minipage}{0.45\textwidth}
+                      \centering
+                      \includegraphics[width=0.9\textwidth]{fig/HaarAugmented1D_sin_freq.png} % first figure itself
+                      \caption{Haar 2x2 filter bank sin input frequency. Compression Rate 0.9287}
+                      \label{fig:Haar_sin}
+                  \end{minipage}\hfill
+                  \begin{minipage}{0.45\textwidth}
+                      \centering
+                      \includegraphics[width=0.9\textwidth]{fig/HaarAugmented1D_sin_rec.png} % second figure itself
+                      \caption{Haar 2x2 filter bank sin input reconstruction.Total average energy loss 0.0104}
+                  \end{minipage}
+              \end{figure}
+              %   \begin{figure}
+              %       \centering
+              %       \includegraphics[width=0.8\textwidth]{fig/Wavelets_-_Filter_Bank.png}
+              %       \caption{Siakam won 2025 NBA eastern conference finals MVP}
+              %       \label{fig:Siakam}
+              %   \end{figure}
+        \item a smooth signal not have much information entropy, so will have a high compress rate.
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Results}
+    \begin{itemize}
+        \item
+              \begin{figure}[ht!]
+                  \centering
+                  \begin{minipage}{0.45\textwidth}
+                      \centering
+                      \includegraphics[width=0.9\textwidth]{fig/Haar3Augmented1D_freq.png} % first figure itself
+                      \caption{Haar 3x3 filter bank random input. Compression Rate 0.1906}
+                      \label{fig:Haar3}
+                  \end{minipage}\hfill
+                  \begin{minipage}{0.45\textwidth}
+                      \centering
+                      \includegraphics[width=0.9\textwidth]{fig/Haar3Augmented1D_rec.png} % second figure itself
+                      \caption{Haar 3x3 filter bank random input.Total average energy loss 0.0008}
+                  \end{minipage}
+              \end{figure}
+              %   \begin{figure}
+              %       \centering
+              %       \includegraphics[width=0.8\textwidth]{fig/Wavelets_-_Filter_Bank.png}
+              %       \caption{Siakam won 2025 NBA eastern conference finals MVP}
+              %       \label{fig:Siakam}
+              %   \end{figure}
+        \item same random sequence same reason.
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Results}
+    \begin{itemize}
+        \item
+              \begin{figure}[ht!]
+                  \centering
+                  \begin{minipage}{0.45\textwidth}
+                      \centering
+                      \includegraphics[width=0.9\textwidth]{fig/Haar3Augmented1D_sin_freq.png} % first figure itself
+                      \caption{Haar 3x3 filter bank sin input frequency. Compression Rate 0.7750}
+                      \label{fig:Haar3_sin}
+                  \end{minipage}\hfill
+                  \begin{minipage}{0.45\textwidth}
+                      \centering
+                      \includegraphics[width=0.9\textwidth]{fig/Haar3Augmented1D_sin_rec.png} % second figure itself
+                      \caption{Haar 3x3 filter bank sin input reconstruction.Total average energy loss 0.0007}
+                  \end{minipage}
+              \end{figure}
+              %   \begin{figure}
+              %       \centering
+              %       \includegraphics[width=0.8\textwidth]{fig/Wavelets_-_Filter_Bank.png}
+              %       \caption{Siakam won 2025 NBA eastern conference finals MVP}
+              %       \label{fig:Siakam}
+              %   \end{figure}
+        \item same smooth signal same reason.
     \end{itemize}
 \end{frame}
 

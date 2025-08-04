@@ -432,10 +432,68 @@ compression
 
 Then we can send the tensor \(\Phi\) and the reduced
 \(\mathring{l}\) to reconstruction.
-You can run these code to obtain same level results.
+You can run these \cite[Code]{HaarAugmentedBAT} code to obtain same level results.
 
 \subsubsection{Results}
+\begin{figure}[ht!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig/HaarAugmented1D_freq.png} % first figure itself
+        \caption{Haar 2x2 filter bank random input. Compression Rate 0.2568}
+        \label{fig:Haar}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig/HaarAugmented1D_rec.png} % second figure itself
+        \caption{Haar 2x2 filter bank random input.Total average energy loss 0.0009}
+    \end{minipage}
+\end{figure}
+random sequence would take more information entropy so have a low compress rate.
+\begin{figure}[ht!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig/HaarAugmented1D_sin_freq.png} % first figure itself
+        \caption{Haar 2x2 filter bank sin input frequency. Compression Rate 0.9287}
+        \label{fig:Haar_sin}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig/HaarAugmented1D_sin_rec.png} % second figure itself
+        \caption{Haar 2x2 filter bank sin input reconstruction.Total average energy loss 0.0104}
+    \end{minipage}
+\end{figure}
+a smooth signal not have much information entropy, so will have a high compress rate.
 
+\begin{figure}[ht!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig/Haar3Augmented1D_freq.png} % first figure itself
+        \caption{Haar 3x3 filter bank random input. Compression Rate 0.1906}
+        \label{fig:Haar3}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig/Haar3Augmented1D_rec.png} % second figure itself
+        \caption{Haar 3x3 filter bank random input.Total average energy loss 0.0008}
+    \end{minipage}
+\end{figure}
+\begin{figure}[ht!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig/Haar3Augmented1D_sin_freq.png} % first figure itself
+        \caption{Haar 3x3 filter bank sin input frequency. Compression Rate 0.7750}
+        \label{fig:Haar3_sin}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig/Haar3Augmented1D_sin_rec.png} % second figure itself
+        \caption{Haar 3x3 filter bank sin input reconstruction.Total average energy loss 0.0007}
+    \end{minipage}
+\end{figure}
 
 % \begin{figure}[ht!]
 %     \centering
