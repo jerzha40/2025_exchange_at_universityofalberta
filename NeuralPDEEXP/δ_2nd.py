@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from torch import load, save, linspace, meshgrid, float64, stack, vmap
-from torch import exp, nn, zeros_like, max, abs, Tensor, cuda, remainder, clamp
+from torch import exp, nn, zeros_like, max, abs, Tensor, cuda
 from PathManager import PathManager
 from FCN import FCN
 from torch.func import jacrev
@@ -106,7 +106,7 @@ for i in range(2000):
     optimizer.zero_grad()
 
     δ_xt: Tensor = δ(xt)
-    δ_x0: Tensor = δ_xt[:, 0, 0]
+    δ_x: Tensor = δ_xt[:, 0, 0]
     d1δ_dxt1_xt: Tensor = d1δ_dxt1(xt)
     d2δ_dxt2_xt: Tensor = d2δ_dxt2(xt)
     # print("asdf", d1δ_dxt1_xt.shape, d2δ_dxt2_xt.shape, δ_xt.shape, sep="\n")
@@ -115,11 +115,17 @@ for i in range(2000):
     d2δ_dtdx_xt = d2δ_dxt2_xt[:, :, 0, 0, 1]
     # print("sldk", d1δ_dt_xt.shape, d2δ_dtdx_xt.shape, d1δ_dx_xt.shape, sep="\n")
     f_δ_xt: Tensor = d0f(δ_xt)[:, :, 0]
+    f_prime_δ_xt: Tensor = d1f_dx1(δ_xt)[:, :, 0, 0]
     # print("sgjk", d1δ_dt_xt.shape, f_δ_xt.shape, sep="\n")
     assert d1δ_dt_xt.shape == f_δ_xt.shape
     # print("slga", x.shape, δ_x.shape, sep="\n")
+    # print("sgdj", f_prime_δ_xt.shape, d1δ_dx_xt.shape, d2δ_dtdx_xt.shape, sep="\n")
 
-    loss = mse(d1δ_dt_xt, f_δ_xt) + 10 * mse(x, δ_x0)
+    loss = (
+        mse(d1δ_dt_xt, f_δ_xt)
+        + mse(x, δ_x)
+        + mse(d2δ_dtdx_xt, f_prime_δ_xt * d1δ_dx_xt)
+    )
     loss.backward()
 
     optimizer.step()
@@ -138,19 +144,16 @@ ax = fig.add_subplot(111, projection="3d")
 ax.plot_surface(
     mx.detach().cpu().view(NX, NT),
     mt.detach().cpu().view(NX, NT),
-    # remainder(δ_xt, 1).detach().cpu().view(NX, NT),
-    clamp(δ_xt, max=1).detach().cpu().view(NX, NT),
+    δ_xt.detach().cpu().view(NX, NT),
     cmap="viridis",
 )
 ax.plot_surface(
     mx.detach().cpu().view(NX, NT),
     mt.detach().cpu().view(NX, NT),
-    # remainder(TrueSolution_xt, 1).detach().cpu().view(NX, NT),
-    clamp(TrueSolution_xt, max=1).detach().cpu().view(NX, NT),
+    TrueSolution_xt.detach().cpu().view(NX, NT),
     cmap="Wistia_r",
 )
 plt.title("compare")
-plt.show()
 plt.savefig(pm.get_data_path("compare", ".png"))
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

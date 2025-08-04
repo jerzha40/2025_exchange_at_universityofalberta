@@ -102,6 +102,12 @@ we can just apply one more transform,
 The function \(\Phi(x,t-n\Delta),t-n\Delta\in[0,\Delta)\)
 is already solved at the first time.
 
+We can then obtain \(\Phi_{2^k\Delta}\)
+by repeatly take the function composition,
+and for each \(k\) we can
+continue to train \(\Phi_{2^k\Delta}\)
+base on \(\Phi_\Delta\) to get more accuracy.
+
 Separation-----------------
 
 There are 10 drones and fly on the sky
@@ -203,34 +209,34 @@ simple Euler method.
 % The video are \cite[sample1-video]{sample1-video}
 % and \cite[sample2-video]{sample2-video}
 % and more other in the same folder on github.
-\begin{figure}[ht!]
-    \centering
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{fig/sample1/dd.png} % first figure itself
-        \caption{sample1 randomly initial position}
-        \label{fig:fig1}
-    \end{minipage}\hfill
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{fig/sample1/dd_18254.png} % second figure itself
-        \caption{sample1 after a period of time}
-    \end{minipage}
-\end{figure}
-\begin{figure}[ht!]
-    \centering
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{fig/sample2/dd.png} % first figure itself
-        \caption{sample1 randomly initial position}
-        \label{fig:fig2}
-    \end{minipage}\hfill
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{fig/sample2/dd_18993.png} % second figure itself
-        \caption{sample2 after a period of time}
-    \end{minipage}
-\end{figure}
+% \begin{figure}[ht!]
+%     \centering
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/sample1/dd.png} % first figure itself
+%         \caption{sample1 randomly initial position}
+%         \label{fig:fig1}
+%     \end{minipage}\hfill
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/sample1/dd_18254.png} % second figure itself
+%         \caption{sample1 after a period of time}
+%     \end{minipage}
+% \end{figure}
+% \begin{figure}[ht!]
+%     \centering
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/sample2/dd.png} % first figure itself
+%         \caption{sample1 randomly initial position}
+%         \label{fig:fig2}
+%     \end{minipage}\hfill
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/sample2/dd_18993.png} % second figure itself
+%         \caption{sample2 after a period of time}
+%     \end{minipage}
+% \end{figure}
 
 \subsubsection{Ten drone case:derivation}
 undergoing

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from torch import load, save, linspace, meshgrid, float64, stack, vmap
-from torch import exp, nn, zeros_like, max, abs, Tensor, cuda, remainder, clamp
+from torch import exp, nn, zeros_like, max, abs, Tensor, cuda, remainder, clamp, sin, pi
+from torch import tan, atan
 from PathManager import PathManager
 from FCN import FCN
 from torch.func import jacrev
@@ -31,11 +32,13 @@ NX = 200
 
 
 def f(x):
-    return x
+    x = x - 0.1
+    return sin(2 * pi * x) / (2 * pi)
 
 
 def TrueSolution(x, t):
-    return x * exp(t)
+    x = x - 0.1
+    return (atan(exp(t) * tan(pi * x))) / pi + 1.1 * (x > 0.5) + 0.1 * (x < 0.5)
 
 
 """
@@ -117,9 +120,14 @@ for i in range(2000):
     f_δ_xt: Tensor = d0f(δ_xt)[:, :, 0]
     # print("sgjk", d1δ_dt_xt.shape, f_δ_xt.shape, sep="\n")
     assert d1δ_dt_xt.shape == f_δ_xt.shape
+    # f_prime_δ_xt: Tensor = d1f_dx1(δ_xt)[:, :, 0, 0]
     # print("slga", x.shape, δ_x.shape, sep="\n")
 
-    loss = mse(d1δ_dt_xt, f_δ_xt) + 10 * mse(x, δ_x0)
+    loss = (
+        mse(d1δ_dt_xt, f_δ_xt)
+        + 10 * mse(x, δ_x0)
+        # + mse(d2δ_dtdx_xt, f_prime_δ_xt * d1δ_dx_xt)
+    )
     loss.backward()
 
     optimizer.step()
@@ -129,6 +137,7 @@ for i in range(2000):
 """
 δ_xt: Tensor = vmap(vmap(δ))(xt)[:, :, 0]
 Graph(δ_xt, "after_δ_xt")
+# plt.show()
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
@@ -139,19 +148,21 @@ ax.plot_surface(
     mx.detach().cpu().view(NX, NT),
     mt.detach().cpu().view(NX, NT),
     # remainder(δ_xt, 1).detach().cpu().view(NX, NT),
-    clamp(δ_xt, max=1).detach().cpu().view(NX, NT),
+    δ_xt.detach().cpu().view(NX, NT),
+    # clamp(δ_xt, max=1).detach().cpu().view(NX, NT),
     cmap="viridis",
 )
 ax.plot_surface(
     mx.detach().cpu().view(NX, NT),
     mt.detach().cpu().view(NX, NT),
     # remainder(TrueSolution_xt, 1).detach().cpu().view(NX, NT),
-    clamp(TrueSolution_xt, max=1).detach().cpu().view(NX, NT),
+    TrueSolution_xt.detach().cpu().view(NX, NT),
+    # clamp(TrueSolution_xt, max=1).detach().cpu().view(NX, NT),
     cmap="Wistia_r",
 )
 plt.title("compare")
-plt.show()
 plt.savefig(pm.get_data_path("compare", ".png"))
+# plt.show()
 """
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 """
