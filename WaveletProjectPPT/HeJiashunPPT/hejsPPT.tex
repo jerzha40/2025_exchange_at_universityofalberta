@@ -1,0 +1,82 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\title{Image Conversion Program with Wavelet Transform Integration}
+\author{hejs}
+\date{August 8, 2025}
+
+\begin{document}
+
+\frame{\titlepage}
+
+% Slide 1: Background and Motivation
+\begin{frame}{Background and Motivation}
+\begin{itemize}
+    \item Image preprocessing is a crucial step in modern computer vision and machine learning.
+    \item Models often require input images to have a fixed size and consistent format.
+    \item Our goal is to convert any input image into a standardized grayscale format of size $2^N \times 2^N$.
+    \item This not only simplifies downstream processing but also ensures compatibility with wavelet transform techniques, which rely on consistent input dimensions.
+\end{itemize}
+\end{frame}
+
+% Slide 2: Wavelet Transform Overview
+\begin{frame}{Wavelet Transform Overview}
+\begin{itemize}
+    \item The wavelet transform is a powerful mathematical tool for analyzing signals at multiple scales.
+    \item Unlike the Fourier transform, which only reveals frequency content, wavelets provide both frequency and spatial localization.
+    \item This is particularly useful in image processing where textures, edges, and fine structures need to be captured at different resolutions.
+    \item Common wavelet families include Haar, Daubechies, and Coiflets — all benefit from inputs with dimensions that are powers of two.
+\end{itemize}
+\end{frame}
+
+% Slide 3: Image Processing Workflow
+\begin{frame}{Image Processing Workflow}
+\begin{enumerate}
+    \item \textbf{Image Loading and Grayscale Conversion}: The image is loaded using a Python imaging library and converted to grayscale. This reduces data complexity and focuses analysis on structural content.
+    \item \textbf{Rescaling with Aspect Ratio Preservation}: The image is resized using high-fidelity interpolation to ensure one side reaches the target length ($2^N$), without distortion.
+    \item \textbf{Centered Cropping}: The resized image is cropped to $2^N \times 2^N$, ensuring input uniformity without compromising important visual features.
+    \item \textbf{Matrix Output}: The final image is converted into a matrix format suitable for mathematical operations, storage, and machine learning integration.
+\end{enumerate}
+\end{frame}
+
+% Slide 4: Theoretical Justification
+\begin{frame}{Theoretical Justification}
+\begin{itemize}
+    \item Many wavelet algorithms are optimized for inputs whose dimensions are powers of two — enabling efficient recursive decomposition.
+    \item Improper dimensions can introduce edge effects or truncation artifacts, degrading transform results.
+    \item LANCZOS interpolation is used due to its ability to preserve edges and textures during resizing, which is critical for wavelet-based analysis.
+    \item Converting to a 2D matrix makes the image directly usable for NumPy operations and compatible with machine learning frameworks like TensorFlow and PyTorch.
+\end{itemize}
+\end{frame}
+
+% Slide 5: Application Scenarios
+\begin{frame}{Application Scenarios}
+\begin{itemize}
+    \item \textbf{Educational Tools}: Demonstrate how images are converted, processed, and decomposed in the frequency domain.
+    \item \textbf{Scientific Research}: Used in experiments where consistent image input is necessary, such as style transfer or anomaly detection.
+    \item \textbf{Data Preprocessing}: Helps in preparing inputs for neural networks, especially for tasks that benefit from texture analysis like medical imaging or remote sensing.
+    \item \textbf{Feature Engineering}: Enables extraction of localized frequency features for traditional machine learning models.
+\end{itemize}
+\end{frame}
+
+% Slide 6: Extension Opportunities
+\begin{frame}{Extension Opportunities}
+\begin{itemize}
+    \item \textbf{Multi-channel Support}: Extend to RGB or multi-spectral image processing for richer feature representations.
+    \item \textbf{Batch Automation}: Apply the transformation to entire datasets, allowing integration into large-scale pipelines.
+    \item \textbf{Visualization Tools}: Incorporate graphical interfaces to preview the original vs. transformed image and to display wavelet decomposition layers.
+    \item \textbf{Parameter Tuning}: Allow users to experiment with different interpolation methods or wavelet bases interactively.
+\end{itemize}
+\end{frame}
+
+% Slide 7: Conclusion
+\begin{frame}{Conclusion}
+\begin{itemize}
+    \item The image conversion program serves as a foundational tool that bridges raw image data and advanced analysis techniques.
+    \item Its adherence to standardized formats makes it ideal for educational purposes, algorithm development, and production pipelines.
+    \item Future development can make it even more powerful by supporting color analysis, batch operations, and intuitive visual feedback.
+\end{itemize}
+\end{frame}
+
+\end{document}
