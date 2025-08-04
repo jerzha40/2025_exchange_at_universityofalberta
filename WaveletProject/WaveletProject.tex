@@ -35,7 +35,7 @@ Zhang Jinrui\thanks{alternative email:zhangjr1022@mails.jlu.edu.cn} \\ \texttt{j
 \begin{abstract}
     In this article, I tried to use
     Wavelet Transform to compress
-    images.
+    images\cite{raissi2017physics}.
 \end{abstract}
 
 
@@ -57,38 +57,38 @@ use these basis as follow.
     f=c_{j,k}\psi_{j,k}
 \]
 
-There are 10 drones and fly on the sky
-obeys Newton's second law of motion.
-which is
-\[
-    \vec{F} = m \vec{a}
-\]
-\[
-    \vec{a} = \frac{d\vec{v}}{dt} = \frac{d^2 \vec{x}}{dt^2}
-\]
-And I mean the policy by, we need a function of force
-depending on some communication between drones
-to decide the \(\vec{F}\)
-\[
-    \vec{F}=f(the current information)
-\]
+% There are 10 drones and fly on the sky
+% obeys Newton's second law of motion.
+% which is
+% \[
+%     \vec{F} = m \vec{a}
+% \]
+% \[
+%     \vec{a} = \frac{d\vec{v}}{dt} = \frac{d^2 \vec{x}}{dt^2}
+% \]
+% And I mean the policy by, we need a function of force
+% depending on some communication between drones
+% to decide the \(\vec{F}\)
+% \[
+%     \vec{F}=f(the current information)
+% \]
 
-And then we want the following dynamic system
-\[\begin{bmatrix}
-        \frac{d\vec{d}}{dt} \\
-        \frac{d\vec{v}}{dt}
-    \end{bmatrix}=
-    \begin{bmatrix}
-        \vec{v} \\
-        \vec{a}=f/m
-    \end{bmatrix}
-\]
-has some Self-organized emergent phenomena,
-to automatically emergent a circle rounding pattern.
+% And then we want the following dynamic system
+% \[\begin{bmatrix}
+%         \frac{d\vec{d}}{dt} \\
+%         \frac{d\vec{v}}{dt}
+%     \end{bmatrix}=
+%     \begin{bmatrix}
+%         \vec{v} \\
+%         \vec{a}=f/m
+%     \end{bmatrix}
+% \]
+% has some Self-organized emergent phenomena,
+% to automatically emergent a circle rounding pattern.
 
-question: framelet multiresolution(sacle function and funciont)
+% question: framelet multiresolution(sacle function and funciont)
 
-\section{Haar 1D sequence Decomposition}
+\section{Haar 1D sequence Decomposition}\label{sec:Haar2}
 For a \(2^{N}\) points sequence, the mother
 wavelet is
 \[
@@ -369,6 +369,89 @@ The following example demonstrates \texttt{convert\_image} usage, producing wave
 \subsection{Summary}
 This program converts images to \(\mathbf{2^N \times 2^N}\) grayscale format, balancing practicality and extensibility. Leveraging Pillow and NumPy, it meets basic image processing needs and provides standardized input for deep learning (e.g., TensorFlow, PyTorch). By outputting wavelet-transform-compatible matrices, it supports advanced image analysis. It serves as a foundation for entry-level image processing practice, academic experiments, and wavelet-integrated preprocessing pipelines.
 
+\section{Optimization Approach}
+\subsection{Roadmap}
+As Fig:\ref{fig:filterCascade} shows, use a filter
+bank we can get high pass coefficients and low pass coefficients.
+Repeatedly apply the filter to the output of the low pass coefficients.
+we can cascade the filter to get a full decomposition.
+
+This is the same decomposition in Section:\ref{sec:Haar2}.
+
+Now the basic idea for Optimize the compression is to give
+specific filter for each layer and do the decomposition
+and reconstruction.
+
+The reconstructed sequence \(\hat{l}\) and the origin signal
+sequence \(l\) will have the same \(l^2\) norm.
+which is
+\[
+    \sum_{k=1}^{n}\hat{l}_k^2=\sum_{k=1}^{n}l_k^2
+\]
+
+According to the a obvious Inequality
+\[
+    \sum_{k=1}^{n}\hat{l}_k^4
+    \leq
+    (\sum_{k=1}^{n}\hat{l}_k^2)^2
+    =
+    (\sum_{k=1}^{n}l_k^2)^2
+\]
+
+To make most energy contribution comes from a few
+dominant coefficients, we just optimize the following
+problem.
+\[
+    \min_{\hat{l}_k\in l^2 st. \sum_{k=1}^{n}\hat{l}_k^2=\sum_{k=1}^{n}l_k^2}(-\sum_{k=1}^{n}\hat{l}_k^4)
+\]
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{fig/Wavelets_-_Filter_Bank.png}
+    \caption{Cascading}
+    \label{fig:filterCascade}
+\end{figure}
+
+\subsection{Code \& Results}
+Use total number of \(\log_{2}n\) 2x2 orthogonal matrixs as the
+filter bank for each layer, which is a (\(\log_{2}n\),2,2) tensor
+\(\Phi\).
+
+The optimization problem can be written as follow
+\[
+    \min_{\Phi}(-\sum_{k=1}^{n}\hat{l}_k^4)
+\]
+
+The decomposition function is
+\[
+    (l,\Phi)\to \hat{l}
+\]
+
+So we will obtain a minimum \(\Phi^*\) as the optimal
+compression
+
+Then we can send the tensor \(\Phi\) and the reduced
+\(\mathring{l}\) to reconstruction.
+You can run these code to obtain same level results.
+
+\subsubsection{Results}
+
+
+% \begin{figure}[ht!]
+%     \centering
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/Wavelets_-_Filter_Bank.png} % first figure itself
+%         \caption{sample1 randomly initial position}
+%         \label{fig:fig1}
+%     \end{minipage}\hfill
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/Wavelets_-_Filter_Bank.png} % second figure itself
+%         \caption{sample1 after a period of time}
+%     \end{minipage}
+% \end{figure}
+
 
 \section{Fractal Approach}
 For a mother wavelet \(\psi(x)\) satisfied
@@ -476,216 +559,216 @@ Then we can just transfer \(F\) and \([v_0,v_1]\)
 
 
 
-\subsection{a simple prompt}
-To be more clear of the notations we use,
-we have \(i\in\{1,2,...,10\}=N\)
-And the drones are ignored of its flying
-height, which the position vector can be a
-2d vector note it as \(\vec{d_i}\)
-And so the velocity and acceleration we denote as
-\(\vec{v_i}=\frac{d\vec{d_i}}{dt}\)
-and
-\(\vec{a_i}=\frac{d\vec{v_i}}{dt}\)
-I want to prompt a \(f\) so that it can form
-a cirle.
-\[
-    \vec{f_i}=m_i(\sum_{\forall k\neq i,\|\vec{d_i}-\vec{d_k}\|\leq R}(\frac{\vec{d_i}-\vec{d_k}}{\|\vec{d_i}-\vec{d_k}\|^3})+(\frac{\vec{d_{t(i)}}-\vec{d_i}}{\|\vec{d_{t(i)}}-\vec{d_i}\|}-v_i))
-\]
-This model is easy to explain, the first term is
-just a inverse square propell force, the second
-term is make the velocity quickly approch a set direction
-the \(t(i)\) is just a randomly choosed target drone
-other than \(i\) that is \(t(i)\in N, t(i)\neq i\)
+% \subsection{a simple prompt}
+% To be more clear of the notations we use,
+% we have \(i\in\{1,2,...,10\}=N\)
+% And the drones are ignored of its flying
+% height, which the position vector can be a
+% 2d vector note it as \(\vec{d_i}\)
+% And so the velocity and acceleration we denote as
+% \(\vec{v_i}=\frac{d\vec{d_i}}{dt}\)
+% and
+% \(\vec{a_i}=\frac{d\vec{v_i}}{dt}\)
+% I want to prompt a \(f\) so that it can form
+% a cirle.
+% \[
+%     \vec{f_i}=m_i(\sum_{\forall k\neq i,\|\vec{d_i}-\vec{d_k}\|\leq R}(\frac{\vec{d_i}-\vec{d_k}}{\|\vec{d_i}-\vec{d_k}\|^3})+(\frac{\vec{d_{t(i)}}-\vec{d_i}}{\|\vec{d_{t(i)}}-\vec{d_i}\|}-v_i))
+% \]
+% This model is easy to explain, the first term is
+% just a inverse square propell force, the second
+% term is make the velocity quickly approch a set direction
+% the \(t(i)\) is just a randomly choosed target drone
+% other than \(i\) that is \(t(i)\in N, t(i)\neq i\)
 
-This formula can be rewrite without physical term as
-follow.
-\[
-    \vec{a_i}=\sum_{\forall k\neq i,\|\vec{d_i}-\vec{d_k}\|\leq R}(\frac{\vec{d_i}-\vec{d_k}}{\|\vec{d_i}-\vec{d_k}\|^3})+(\frac{\vec{d_{t(i)}}-\vec{d_i}}{\|\vec{d_{t(i)}}-\vec{d_i}\|}-v_i)
-\]
-separately view this is combined by two independent force
-\[
-    (\vec{a_i})_{target}=(\frac{\vec{d_{t(i)}}-\vec{d_i}}{\|\vec{d_{t(i)}}-\vec{d_i}\|}-v_i)
-\]
-\[
-    (\vec{a_i})_{propell}=\sum_{\forall k\neq i,\|\vec{d_i}-\vec{d_k}\|\leq R}(\frac{\vec{d_i}-\vec{d_k}}{\|\vec{d_i}-\vec{d_k}\|^3})
-\]
+% This formula can be rewrite without physical term as
+% follow.
+% \[
+%     \vec{a_i}=\sum_{\forall k\neq i,\|\vec{d_i}-\vec{d_k}\|\leq R}(\frac{\vec{d_i}-\vec{d_k}}{\|\vec{d_i}-\vec{d_k}\|^3})+(\frac{\vec{d_{t(i)}}-\vec{d_i}}{\|\vec{d_{t(i)}}-\vec{d_i}\|}-v_i)
+% \]
+% separately view this is combined by two independent force
+% \[
+%     (\vec{a_i})_{target}=(\frac{\vec{d_{t(i)}}-\vec{d_i}}{\|\vec{d_{t(i)}}-\vec{d_i}\|}-v_i)
+% \]
+% \[
+%     (\vec{a_i})_{propell}=\sum_{\forall k\neq i,\|\vec{d_i}-\vec{d_k}\|\leq R}(\frac{\vec{d_i}-\vec{d_k}}{\|\vec{d_i}-\vec{d_k}\|^3})
+% \]
 
-\subsection{a simple prompt:simulation}
-\subsubsection{Four drone case:derivation}
-This case just choose \(N=\{1,2,3,4\}\)
-and don't allow \(t(t(i))=i\)
-which definitely form a three element loop and
-a dangling drone.
+% \subsection{a simple prompt:simulation}
+% \subsubsection{Four drone case:derivation}
+% This case just choose \(N=\{1,2,3,4\}\)
+% and don't allow \(t(t(i))=i\)
+% which definitely form a three element loop and
+% a dangling drone.
 
-We have a (4,2)-tensor \(\vec{d_i}\)
-and two other (4,2)-tensor \(\vec{v_i}\)
-and \(\vec{a_i}\)
-The initial points are randomly choosed
-in Uniformly \([0,1]\times[0,1]\)
+% We have a (4,2)-tensor \(\vec{d_i}\)
+% and two other (4,2)-tensor \(\vec{v_i}\)
+% and \(\vec{a_i}\)
+% The initial points are randomly choosed
+% in Uniformly \([0,1]\times[0,1]\)
 
-choose a time increment \(dt\)
-and the simulation update formula is simple to write
+% choose a time increment \(dt\)
+% and the simulation update formula is simple to write
 
-just as follow
-\[\begin{bmatrix}
-        \vec{{d_{n+1}}_i} \\
-        \vec{{v_{n+1}}_i}
-    \end{bmatrix}=
-    \begin{bmatrix}
-        \vec{{d_{n}}_i}+\vec{{v_n}_i}dt \\
-        \vec{{v_{n}}_i}+(\sum_{\forall k\neq i,\|\vec{{d_n}_i}-\vec{{d_n}_k}\|\leq R}(\frac{\vec{{d_n}_i}-\vec{{d_n}_k}}{\|\vec{{d_n}_i}-\vec{{d_n}_k}\|^3})+(\frac{\vec{{d_n}_{t(i)}}-\vec{{d_n}_i}}{\|\vec{{d_n}_{t(i)}}-\vec{{d_n}_i}\|}-{v_n}_i))dt
-    \end{bmatrix}
-\]
-simple Euler method.
+% just as follow
+% \[\begin{bmatrix}
+%         \vec{{d_{n+1}}_i} \\
+%         \vec{{v_{n+1}}_i}
+%     \end{bmatrix}=
+%     \begin{bmatrix}
+%         \vec{{d_{n}}_i}+\vec{{v_n}_i}dt \\
+%         \vec{{v_{n}}_i}+(\sum_{\forall k\neq i,\|\vec{{d_n}_i}-\vec{{d_n}_k}\|\leq R}(\frac{\vec{{d_n}_i}-\vec{{d_n}_k}}{\|\vec{{d_n}_i}-\vec{{d_n}_k}\|^3})+(\frac{\vec{{d_n}_{t(i)}}-\vec{{d_n}_i}}{\|\vec{{d_n}_{t(i)}}-\vec{{d_n}_i}\|}-{v_n}_i))dt
+%     \end{bmatrix}
+% \]
+% simple Euler method.
 
-\subsubsection{Four drone case:code \& result}
-the computational code are \cite[FourDroneCase]{FourDroneCase} .
-the results are shown by the following pictrues which
-generated by the code.
-The video are \cite[sample1-video]{sample1-video}
-and \cite[sample2-video]{sample2-video}
-and more other in the same folder on github.
-\begin{figure}[ht!]
-    \centering
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{fig/sample1/dd.png} % first figure itself
-        \caption{sample1 randomly initial position}
-        \label{fig:fig1}
-    \end{minipage}\hfill
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{fig/sample1/dd_18254.png} % second figure itself
-        \caption{sample1 after a period of time}
-    \end{minipage}
-\end{figure}
-\begin{figure}[ht!]
-    \centering
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{fig/sample2/dd.png} % first figure itself
-        \caption{sample1 randomly initial position}
-        \label{fig:fig2}
-    \end{minipage}\hfill
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=0.9\textwidth]{fig/sample2/dd_18993.png} % second figure itself
-        \caption{sample2 after a period of time}
-    \end{minipage}
-\end{figure}
+% \subsubsection{Four drone case:code \& result}
+% the computational code are \cite[FourDroneCase]{FourDroneCase} .
+% the results are shown by the following pictrues which
+% generated by the code.
+% The video are \cite[sample1-video]{sample1-video}
+% and \cite[sample2-video]{sample2-video}
+% and more other in the same folder on github.
+% \begin{figure}[ht!]
+%     \centering
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/sample1/dd.png} % first figure itself
+%         \caption{sample1 randomly initial position}
+%         \label{fig:fig1}
+%     \end{minipage}\hfill
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/sample1/dd_18254.png} % second figure itself
+%         \caption{sample1 after a period of time}
+%     \end{minipage}
+% \end{figure}
+% \begin{figure}[ht!]
+%     \centering
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/sample2/dd.png} % first figure itself
+%         \caption{sample1 randomly initial position}
+%         \label{fig:fig2}
+%     \end{minipage}\hfill
+%     \begin{minipage}{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=0.9\textwidth]{fig/sample2/dd_18993.png} % second figure itself
+%         \caption{sample2 after a period of time}
+%     \end{minipage}
+% \end{figure}
 
-\subsubsection{Ten drone case:derivation}
-undergoing
+% \subsubsection{Ten drone case:derivation}
+% undergoing
 
-\subsubsection{Ten drone case:result}
-undergoing
+% \subsubsection{Ten drone case:result}
+% undergoing
 
-\subsection{some analysis why it will have a stability property}
-\subsubsection{the terminate radius R}
-undergoing
+% \subsection{some analysis why it will have a stability property}
+% \subsubsection{the terminate radius R}
+% undergoing
 
-\subsubsection{the terminate center O}
-undergoing
+% \subsubsection{the terminate center O}
+% undergoing
 
-\subsubsection{graph theory part}
-The \(t(i)\) forms a graph which have \(n\) points
-and \(n\) oriented edges, this forms a tree with a extra
-edges, and this case It will obviously form a Unicyclic Graph.
+% \subsubsection{graph theory part}
+% The \(t(i)\) forms a graph which have \(n\) points
+% and \(n\) oriented edges, this forms a tree with a extra
+% edges, and this case It will obviously form a Unicyclic Graph.
 
-Which is a tree if we treat all the point on the
-loop as the same point.
+% Which is a tree if we treat all the point on the
+% loop as the same point.
 
-\subsection{target distance method}
-undergoing
+% \subsection{target distance method}
+% undergoing
 
-\subsection{target distance method:simulation}
-undergoing
+% \subsection{target distance method:simulation}
+% undergoing
 
 
-\section{Zinan Su's approach}
-\subsection{notations \& equations}
-safe collide radius is \(d_s\)
-\[
-    \sigma=2d_s
-\]
-\(NUM\) is the total number of the drones.
-And then we want the following dynamic system
-\[\begin{bmatrix}
-        \frac{d\vec{p_i}}{dt} \\
-        \frac{d\vec{v_i}}{dt}
-    \end{bmatrix}=
-    \begin{bmatrix}
-        \vec{v_i} \\
-        \vec{a_i}
-    \end{bmatrix}
-\]
-circle origin is a function
-\[
-    c=\frac{1}{NUM}\sum_{k=1}^{NUM}p_k
-\]
-Four constants.
-\[
-    k_p=
-\]
-\[
-    k_d=
-\]
-\[
-    k_v=
-\]
-\[
-    k_r=
-\]
-\[
-    R^*=\frac{1}{NUM}\sum_{k=1}^{NUM}p_k(0)-c(0)
-\]
-\[
-    v_d=\frac{1}{NUM}\sum_{k=1}^{NUM}\|v_k(0)\|
-\]
-and
-\[
-    r_i=p_i-c
-\]
-\[
-    d_i=\|r_i\|
-\]
-\[
-    \hat{r_i}=\frac{r_i}{d_i}
-\]
-\[
-    \hat{\theta_i}=\mathbb{M}_\theta r_i
-\]
-\[
-    \mathbb{M}_\theta=
-    \begin{bmatrix}
-        0  & 1 \\
-        -1 & 0
-    \end{bmatrix}
-\]
-\[
-    {v_{i}}_{\parallel}=\hat{r_i}\cdot v_i
-\]
-\[
-    {v_{i}}_{\perp}=\hat{\theta_i}\cdot v_i
-\]
-\[
-    U(r)=k_re^{-\frac{r}{2\sigma^2}}
-\]
-\[
-    U_{ij}=U(\|p_i-p_j\|)
-\]
-\[
-    \vec{u_i}_1=[-k_p(d_i-R^*)-k_d{v_{i}}_{\parallel}]\hat{r_i}
-\]
-\[
-    \vec{u_i}_2=[-k_v({v_{i}}_{\perp}-v_d)]\hat{\theta_i}
-\]
-\[
-    \vec{u_i}_3=\sum_{\forall k\neq i}(-\nabla_{p_i}U_{ij})
-\]
-\[
-    \vec{u_i}=\vec{u_i}_1+\vec{u_i}_2+\vec{u_i}_3
-\]
+% \section{Zinan Su's approach}
+% \subsection{notations \& equations}
+% safe collide radius is \(d_s\)
+% \[
+%     \sigma=2d_s
+% \]
+% \(NUM\) is the total number of the drones.
+% And then we want the following dynamic system
+% \[\begin{bmatrix}
+%         \frac{d\vec{p_i}}{dt} \\
+%         \frac{d\vec{v_i}}{dt}
+%     \end{bmatrix}=
+%     \begin{bmatrix}
+%         \vec{v_i} \\
+%         \vec{a_i}
+%     \end{bmatrix}
+% \]
+% circle origin is a function
+% \[
+%     c=\frac{1}{NUM}\sum_{k=1}^{NUM}p_k
+% \]
+% Four constants.
+% \[
+%     k_p=
+% \]
+% \[
+%     k_d=
+% \]
+% \[
+%     k_v=
+% \]
+% \[
+%     k_r=
+% \]
+% \[
+%     R^*=\frac{1}{NUM}\sum_{k=1}^{NUM}p_k(0)-c(0)
+% \]
+% \[
+%     v_d=\frac{1}{NUM}\sum_{k=1}^{NUM}\|v_k(0)\|
+% \]
+% and
+% \[
+%     r_i=p_i-c
+% \]
+% \[
+%     d_i=\|r_i\|
+% \]
+% \[
+%     \hat{r_i}=\frac{r_i}{d_i}
+% \]
+% \[
+%     \hat{\theta_i}=\mathbb{M}_\theta r_i
+% \]
+% \[
+%     \mathbb{M}_\theta=
+%     \begin{bmatrix}
+%         0  & 1 \\
+%         -1 & 0
+%     \end{bmatrix}
+% \]
+% \[
+%     {v_{i}}_{\parallel}=\hat{r_i}\cdot v_i
+% \]
+% \[
+%     {v_{i}}_{\perp}=\hat{\theta_i}\cdot v_i
+% \]
+% \[
+%     U(r)=k_re^{-\frac{r}{2\sigma^2}}
+% \]
+% \[
+%     U_{ij}=U(\|p_i-p_j\|)
+% \]
+% \[
+%     \vec{u_i}_1=[-k_p(d_i-R^*)-k_d{v_{i}}_{\parallel}]\hat{r_i}
+% \]
+% \[
+%     \vec{u_i}_2=[-k_v({v_{i}}_{\perp}-v_d)]\hat{\theta_i}
+% \]
+% \[
+%     \vec{u_i}_3=\sum_{\forall k\neq i}(-\nabla_{p_i}U_{ij})
+% \]
+% \[
+%     \vec{u_i}=\vec{u_i}_1+\vec{u_i}_2+\vec{u_i}_3
+% \]
 
 
 
