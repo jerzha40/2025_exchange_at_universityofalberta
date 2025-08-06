@@ -1,0 +1,122 @@
+\documentclass[11pt]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\setbeamertemplate{navigation symbols}{}
+
+\title[Framelet Transforms]{Perfect Reconstruction of\\ Discrete Framelet Transforms}
+\subtitle{Chapter 1.1.2 Summary}
+\author{Based on \emph{Framelets and Wavelets}\\ Bin Han}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \maketitle
+\end{frame}
+
+\section{Basic Definitions}
+
+\begin{frame}{Sequence Spaces}
+  \begin{itemize}
+    \item $\ell(\mathbb{Z})=\bigl\{v=\{v(k)\}_{k\in\mathbb{Z}}\mid v(k)\in\mathbb{C}\bigr\}$
+    \item $\ell_0(\mathbb{Z})=\bigl\{u\in\ell(\mathbb{Z})\mid \text{only finitely many } u(k)\neq 0\bigr\}$
+    \item filter bank: $\{u_0,\dots,u_s\}\subset \ell_0(\mathbb{Z})$
+  \end{itemize}
+\end{frame}
+
+\section{Key Operators}
+
+\begin{frame}{Operators}
+  \begin{itemize}
+    \item \textbf{Subdivision:}
+          \[
+            [S_u v](n)=2\sum_{k\in\mathbb{Z}} v(k)\,u(n-2k)
+          \]
+    \item \textbf{Transition:}
+          \[
+            [T_u v](n)=2\sum_{k\in\mathbb{Z}} v(k)\,\overline{u(k-2n)}
+          \]
+    \item \textbf{Discrete Framelet Transform (DFrT):}
+          \[
+            \frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v
+          \]
+  \end{itemize}
+\end{frame}
+
+\section{Perfect Reconstruction (PR)}
+
+\begin{frame}{Perfect Reconstruction Condition}
+  \begin{itemize}
+    \item the transform satisfies perfect reconstruction if
+          \[
+            \frac{1}{2}\sum_{\ell=0}^s S_{u_\ell} T_{\tilde{u}_\ell} v = v \quad \forall v\in\ell(\mathbb{Z}).
+          \]
+  \end{itemize}
+\end{frame}
+
+\section{Equivalent Characterizations}
+
+\begin{frame}{Main Theorem -- Four Equivalent Statements}
+  The following are equivalent:
+
+  \begin{enumerate}
+    \item The filter bank $(\{\tilde u_\ell\},\{u_\ell\})$ has PR.
+    \item $\displaystyle\frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v = v$ for all $v\in\ell(\mathbb{Z})$.
+    \item The identity holds for $v=\delta$ and $v=\delta(\cdot-1)$.
+    \item Frequency-domain identities for all $\omega\in\mathbb{R}$:
+          \[
+            \sum_{\ell=0}^{s}\overline{\hat{\tilde u}_\ell(\omega)}\hat u_\ell(\omega)=1,
+          \]
+          \[
+            \sum_{\ell=0}^{s}\overline{\hat{\tilde u}_\ell(\omega)}\hat u_\ell(\omega+\pi)=0.
+          \]
+  \end{enumerate}
+\end{frame}
+
+\section{Proof Sketch}
+
+\subsection*{Implications}
+
+\begin{frame}{(i) $\Rightarrow$ (ii) $\Rightarrow$ (iii)}
+  Trivial inclusions:
+  \[
+    \ell_0(\mathbb{Z})\subseteq \ell(\mathbb{Z})\quad\text{and}\quad \delta,\delta(\cdot-1)\in\ell_0(\mathbb{Z}).
+  \]
+\end{frame}
+
+\begin{frame}{(iii) $\Rightarrow$ (iv)}
+  \begin{enumerate}
+    \item \textbf{Frequency Domain Conversion:} Using Fourier transforms of $T_{\tilde{u}_\ell}$ and $S_{u_\ell}$:
+          \[
+            \widehat{T_{\tilde{u}_\ell} v}(\omega) = \hat{v}(\omega/2)\overline{\hat{\tilde{u}}_\ell(\omega/2)} + \hat{v}(\omega/2+\pi)\overline{\hat{\tilde{u}}_\ell(\omega/2+\pi)},
+          \]
+          \[
+            \widehat{S_{u_\ell} w}(\omega) = \hat{w}(2\omega)\hat{u}_\ell(\omega).
+          \]
+
+    \item \textbf{Substitute Basis Signals:} Plugging $v = \delta$ ($\hat{v}=1$) and $v = \delta(\cdot-1)$ ($\hat{v}=e^{-i\omega}$) into the PR condition yields the system:
+          \[
+            \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) + \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 2,
+          \]
+          \[
+            \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) - \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 0.
+          \]
+
+    \item \textbf{Solve System:} Adding and subtracting these equations gives condition (iv).
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{(iv) $\Rightarrow$ (ii) and (ii) $\Rightarrow$ (i)}
+  \begin{itemize}
+    \item (iv) $\Rightarrow$ (ii): Condition (iv) implies the frequency identity holds for all $v \in \ell_0(\mathbb{Z})$ by linearity of Fourier transform.
+    \item (ii) $\Rightarrow$ (i):  {Localization Argument:} For any $v \in \ell(\mathbb{Z})$, truncate to local signal $v_n \in \ell_0(\mathbb{Z})$ using finite support of filters. Apply (ii) to show:
+          \[
+            v(n) = \frac{1}{2}\sum_{\ell=0}^s [S_{u_\ell} T_{\tilde{u}_\ell} v](n).
+          \]
+  \end{itemize}
+\end{frame}
+
+\end{document}
