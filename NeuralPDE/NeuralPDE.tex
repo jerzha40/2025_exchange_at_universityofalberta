@@ -108,6 +108,33 @@ and for each \(k\) we can
 continue to train \(\Phi_{2^k\Delta}\)
 base on \(\Phi_\Delta\) to get more accuracy.
 
+\section{residual model}
+To learn the \(\Phi_{\Delta}(x)\), we basically
+need to learn a \(\mathbb{R}\to\mathbb{R}\)
+function which is very hard to maintain for computer to
+achieve.
+
+And for all function the initial value \(\Phi_{0}(x)=x\),
+we may only learn the difference function
+\(\delta(x,t)=\Phi(x,t)-x\) or
+\(\delta_t(x)=\Phi_t(x)-x\).
+
+Then the differential equation
+is like the following.
+\[
+    \frac{\partial\delta}{\partial t}=f(\delta+x)-x
+\]
+and
+\[
+    \frac{\partial^2\delta}{\partial x\partial t}
+    =
+    f^\prime(\delta+x)\frac{\partial\delta}{\partial x}
+\]
+
+\section{residual euler model}
+To lean some effort from the conventional numerical scheme
+I want to use some euler method.
+
 Separation-----------------
 
 There are 10 drones and fly on the sky
