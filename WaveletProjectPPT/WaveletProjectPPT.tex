@@ -328,16 +328,19 @@ Mo Zian
 
 % \end{frame}
 
-\section{Haar Augmented}
+\section{Augmented compression}
 \begin{frame}
     \frametitle{Basic Idea}
     \begin{itemize}
         \item \[
+                  \Big(\frac{\sum_{k=1}^{n}\hat{l}_k}{n}\Big)^2\;\le\;\frac{\sum_{k=1}^{n}\hat{l}_k^2}{n}.
+              \]
+        \item \[
                   \sum_{k=1}^{n}\hat{l}_k^4
                   \geq
-                  (\sum_{k=1}^{n}\hat{l}_k^2)^2
+                  \frac{(\sum_{k=1}^{n}\hat{l}_k^2)^2}{n}
                   =
-                  (\sum_{k=1}^{n}l_k^2)^2
+                  \frac{(\sum_{k=1}^{n}l_k^2)^2}{n}
               \]
         \item \[
                   \min_{\hat{l}_k\in l^2 st. \sum_{k=1}^{n}\hat{l}_k^2=\sum_{k=1}^{n}l_k^2}(-\sum_{k=1}^{n}\hat{l}_k^4)
