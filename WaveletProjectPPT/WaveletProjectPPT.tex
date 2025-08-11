@@ -126,51 +126,209 @@ Mo Zian
     \end{columns}
 \end{frame}
 
-\section{Haar Compression}
+\section{Image compression}
 \begin{frame}
-    \frametitle{Standard Haar Decomposition}
-    \begin{itemize}
-        \item sdlfkj
-        \item sDF
-        \item sdf
-    \end{itemize}
+    \frametitle{Image compression}
+    Let's see an application of our research first.\\ \ \\
+    By our research, $\forall\ m \in \mathbb{N}_{+}$, we can get \textbf{an set of orthonormal bases} of $\mathbb{R}^{m}$ quickly.
+    \begin{block}{Theorem 2.1}
+        Let $\{u_{i}\}_{i=1}^{m}$ is a set of \textbf{orthonormal bases} of $\mathbb{R}^{m}$, $\{v_{i}\}_{i=1}^{n}$ is a set of \textbf{orthonormal bases} of $\mathbb{R}^{n}$, then
+        $$\{u_{i}\times v_{j}\ |\ i = 1,\cdots m, j=1,\cdots n\}$$
+        is a set of \textbf{orthonormal bases} of $\mathbb{R}^{m\times n}$.
+    \end{block}
 \end{frame}
 \begin{frame}
-    \frametitle{sfdfg}
-    \begin{itemize}
-        \item sdlfkj
-        \item sDF
-        \item sdf
-    \end{itemize}
+    \frametitle{Image compression}
+    A grayscale image is stored as a grayscale matrix in the computer. Then we only need to know how to "{\color{blue}compress}" a matrix.\\ \ \\
+    For $A \in \mathbb{R}^{m\times n}$, if $\{u_{i}\},\{v_{j}\}$ are sets of \textbf{orthonormal bases} of $\mathbb{R}^{m}$ and $\mathbb{R}^{n}$, according to (\textit{Theorem 2.1}),
+    $\exists\ \omega_{i,j}\in\mathbb{R}, i = 1, \cdots m, j = 1, \cdots, n,$
+    $$	A = \sum_{i,j}\omega_{i,j}\ \cdot \ u_{i} \cdot v_{j}^{T}.$$
+    Let $M = (u_{1},u_{2},\cdots,u_{m}),\ N = (v_{1},v_{2},\cdots,v_{n}), W = (\omega_{i,j}).$ Then
+    $$M^{T}AN =W,\ MWN^{T} = A.$$
 \end{frame}
 \begin{frame}
-    \frametitle{sadsgkjh}
-    \begin{itemize}
-        \item sdlfkj
-        \item sDF
-        \item sdf
-    \end{itemize}
+    \frametitle{Image compression}
+    {\color{red}If $\omega_{i,j}$ is too small, the influence of  corresponding basis can be ignored.} \\Then
+    \begin{align*}
+        \widetilde{A} = \sum_{i,j}\widetilde{\omega_{i,j}}\ \cdot \ u_{i} \cdot v_{j}^{T},\ \widetilde{\omega_{i,j}} = \left\{
+        \begin{aligned}
+             & \omega_{i,j}, & \ |\omega_{i,j}| > \lambda    \\
+             & 0,            & \ |\omega_{i,j}| \leq \lambda
+        \end{aligned}
+        \right..
+    \end{align*}
+    $\widetilde{A}$ is an approximation of $A$, while $\lambda$ is image compression strength.\\ \ \\
+    Let $\widetilde{W} = (\widetilde{\omega_{i,j}}).$ As long as $\lambda$ is large enough, we can transform $\widetilde{W}$ into a \textbf{sparse matrix} which needs less storage space.\\ \ \\
+    {\color{blue}Then we set $\lambda$ equal to $0.5$ and see the result.}
 \end{frame}
 \begin{frame}
-    \frametitle{sdf}
-    \begin{itemize}
-        \item sdlfkj
-        \item sDF
-        \item sdf
-    \end{itemize}
+    \frametitle{Image compression}
+    \begin{figure}[ht!]
+        \centering
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[width=0.9\textwidth]{fig/Siakam_gray.png} % first figure itself
+            \caption{Original image}
+            % \label{fig:Haar_sin}
+        \end{minipage}\hfill
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[width=0.9\textwidth]{fig/Siakam_compressed.png} % second figure itself
+            \caption{Final image}
+        \end{minipage}
+    \end{figure}
+\end{frame}
+\begin{frame}
+    \frametitle{Image compression}
+    For original image , the size of stored information is $981\times1759 = 1725579$. \\\ \\
+    {\color{red} However, after compression, the size of stored information is  only $15364\times2 = 30728$.} \\\ \\
+    Indeed, we reduce storage space by compression. However, we also lose much detailed information of original picture. That's why we should change $\lambda$ for different purposes to reach the balance.
 \end{frame}
 
-\section{Meng Jingyuan}
-\begin{frame}
-    \frametitle{sadsgkjh}
-    \begin{itemize}
-        \item sdlfkj
-        \item sDF
-        \item sdf
-    \end{itemize}
+\section{Energy Conservation}
+% \subsection{Research background and objectives}
+
+\begin{frame}{Research background and objectives}
+    \begin{block}{Advantages of Wavelet Transform}
+        - Multiresolution analysis \\
+        - frequency localization capability
+    \end{block}
+
+    \begin{block}{Importance of Energy Conservation}
+        - Ensures information integrity in signal processing  \\
+        - Theoretical basis for image compression, denoising
+    \end{block}
+
+    \begin{block}{Research Objectives}
+        - Validate energy conservation mathematically  \\
+        - Quantify energy retention via image compression experiments
+    \end{block}
 \end{frame}
 
-\section{Haar Compression Augmented}
+% \subsection{Theoretical analysis}
+
+
+\begin{frame}{Theoretical analysis}
+    \begin{block}{Theoretical Foundations of DWT}
+        \begin{itemize}
+            \item Scaling function ($\phi$) and wavelet function ($\psi$)
+            \item Multi-scale decomposition: Approximation ($cA$) and Detail   ($cH$, $cV$, $cD$) subbands
+            \item Orthogonal Wavelet Basis Properties:
+                  \[
+                      \langle \psi_{j,k},\,\psi_{m,n}\rangle
+                      = \delta_{j,m}\,\delta_{k,n},
+                      \qquad j,k,m,n\in\mathbb{Z}
+                  \]
+
+
+        \end{itemize}
+    \end{block}
+
+
+
+
+
+    \begin{block}{Critical Conditions}
+        \begin{itemize}
+            \item Use of orthogonal wavelets (e.g., Haar, Db1)
+            \item No signal truncation or padding-induced errors
+        \end{itemize}
+    \end{block}
+\end{frame}
+\begin{frame}{ Energy Conservation Formula }
+    \begin{block}{Energy Conservation Formula for Orthogonal DWT}
+        \begin{itemize}
+            \item For orthogonal wavelet bases:
+                  \[
+                      \sum_{i=1}^{M} \sum_{j=1}^{N} |x[i,j]|^2 = \sum_{k,l} |d_k[l]|^2 + \sum_{m} |a_J[m]|^2
+                  \]
+            \item For Haar wavelet bases:
+
+                  \[
+                      \begin{aligned}
+                          \sum_{i,j} |x[i,j]|^2 =\sum_{i,j} |cA[i,j]|^2 + \sum_{i,j} |cH[i,j]|^2 \\+ \sum_{i,j} |cV[i,j]|^2 +\sum_{i,j} |cD[i,j]|^2
+                      \end{aligned}
+                  \]
+        \end{itemize}
+    \end{block}
+
+
+
+\end{frame}
+% \subsection{Experimental Design and Code Implementation}
+
+\begin{frame}{Experimental Design and Code Implementation}
+    \begin{block}{Workflow}
+        \begin{itemize}
+            \item Image preprocessing
+                  \begin{itemize}
+                      \item grayscale conversion
+                      \item resizing to power-of-2 dimensions
+                  \end{itemize}
+            \item DWT decomposition("dwt2"function)
+            \item Energy calculation and conservation validation
+            \item Image reconstruction("idwt2"function)
+        \end{itemize}
+    \end{block}
+    \begin{block}{Parameters}
+        \begin{itemize}
+            \item Test image:"Lena"(52*52)
+            \item Wavelet basis:Haar
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+\begin{frame}{Code and Implementation}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{fig/代码2.jpg}
+        \caption{"Haar"basis}
+        % \label{fig:placeholder}
+    \end{figure}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1\linewidth]{fig/代码3.png}
+        \caption{Verify Energy Conservation}
+        % \label{fig:placeholder}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Code and Implementation}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{fig/图像1.png}
+
+        % \label{fig:placeholder}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{fig/图片4.jpg}
+
+        % \label{fig:placeholder}
+    \end{figure}
+\end{frame}
+
+% \subsection{Conclusions and Future Work}
+% \begin{frame}{Conclusions and Future Work}
+%     \begin{block}{Conclusions}
+%         \begin{itemize}
+%             \item DWT strictly satisfies energy conservation when using orthogonal wavelet bases
+%             \item Proper image size alignment and orthogonal basis selection are critical factors
+%         \end{itemize}
+%     \end{block}
+%     \begin{block}{Future Work}
+%         \begin{itemize}
+%             \item Energy error analysis for non-orthogonal wavelet frames
+%             \item Study of energy distribution in multi-scale decomposition (multi-level DWT)
+%         \end{itemize}
+%     \end{block}
+
+% \end{frame}
+
+\section{Haar Augmented}
 \begin{frame}
     \frametitle{Basic Idea}
     \begin{itemize}
@@ -310,15 +468,53 @@ Mo Zian
     \end{itemize}
 \end{frame}
 
-\section{Equivalent Characterizations}
+\section{Perfect Reconstruction}
+
+
+\begin{frame}{Sequence Spaces}
+    \begin{itemize}
+        \item $\ell(\mathbb{Z})=\bigl\{v=\{v(k)\}_{k\in\mathbb{Z}}\mid v(k)\in\mathbb{C}\bigr\}$
+        \item $\ell_0(\mathbb{Z})=\bigl\{u\in\ell(\mathbb{Z})\mid \text{only finitely many } u(k)\neq 0\bigr\}$
+        \item filter bank: $\{u_0,\dots,u_s\}\subset \ell_0(\mathbb{Z})$
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Operators}
+    \begin{itemize}
+        \item \textbf{Subdivision:}
+              \[
+                  [S_u v](n)=2\sum_{k\in\mathbb{Z}} v(k)\,u(n-2k)
+              \]
+        \item \textbf{Transition:}
+              \[
+                  [T_u v](n)=2\sum_{k\in\mathbb{Z}} v(k)\,\overline{u(k-2n)}
+              \]
+        \item \textbf{Discrete Framelet Transform (DFrT):}
+              \[
+                  \frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v
+              \]
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Perfect Reconstruction Condition}
+    \begin{itemize}
+        \item the transform satisfies perfect reconstruction if
+              \[
+                  \frac{1}{2}\sum_{\ell=0}^s S_{u_\ell} T_{\tilde{u}_\ell} v = v \quad \forall v\in\ell(\mathbb{Z}).
+              \]
+    \end{itemize}
+\end{frame}
+
 
 \begin{frame}{Main Theorem -- Four Equivalent Statements}
     The following are equivalent:
 
     \begin{enumerate}
         \item The filter bank $(\{\tilde u_\ell\},\{u_\ell\})$ has PR.
-        \item $\displaystyle\frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v = v$ for all $v\in\ell(\mathbb{Z})$.
-        \item The identity holds for $v=\delta$ and $v=\delta(\cdot-1)$.
+        \item The identity $\displaystyle\frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v = v$ holds for all $v\in\ell_0(\mathbb{Z})$.
+        \item The identity $\displaystyle\frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v = v$ holds for $v=\delta$ and $v=\delta(\cdot-1)$.
         \item Frequency-domain identities for all $\omega\in\mathbb{R}$:
               \[
                   \sum_{\ell=0}^{s}\overline{\hat{\tilde u}_\ell(\omega)}\hat u_\ell(\omega)=1,
@@ -330,7 +526,6 @@ Mo Zian
 \end{frame}
 
 
-\subsection*{Proof Sketch-Implications}
 
 \begin{frame}{(i) $\Rightarrow$ (ii) $\Rightarrow$ (iii)}
     Trivial inclusions:
@@ -351,10 +546,10 @@ Mo Zian
 
         \item \textbf{Substitute Basis Signals:} Plugging $v = \delta$ ($\hat{v}=1$) and $v = \delta(\cdot-1)$ ($\hat{v}=e^{-i\omega}$) into the PR condition yields the system:
               \[
-                  \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) + \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 2,
+                  \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) + \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 1,
               \]
               \[
-                  \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) - \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 0.
+                  \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) - \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 1.
               \]
 
         \item \textbf{Solve System:} Adding and subtracting these equations gives condition (iv).

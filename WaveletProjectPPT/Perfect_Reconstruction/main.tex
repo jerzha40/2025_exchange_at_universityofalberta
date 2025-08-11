@@ -64,8 +64,8 @@
 
   \begin{enumerate}
     \item The filter bank $(\{\tilde u_\ell\},\{u_\ell\})$ has PR.
-    \item $\displaystyle\frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v = v$ for all $v\in\ell(\mathbb{Z})$.
-    \item The identity holds for $v=\delta$ and $v=\delta(\cdot-1)$.
+    \item The identity $\displaystyle\frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v = v$ holds for all $v\in\ell_0(\mathbb{Z})$.
+    \item The identity $\displaystyle\frac12\sum_{\ell=0}^{s} S_{u_\ell}T_{\tilde u_\ell}v = v$ holds for $v=\delta$ and $v=\delta(\cdot-1)$.
     \item Frequency-domain identities for all $\omega\in\mathbb{R}$:
           \[
             \sum_{\ell=0}^{s}\overline{\hat{\tilde u}_\ell(\omega)}\hat u_\ell(\omega)=1,
@@ -99,10 +99,10 @@
 
     \item \textbf{Substitute Basis Signals:} Plugging $v = \delta$ ($\hat{v}=1$) and $v = \delta(\cdot-1)$ ($\hat{v}=e^{-i\omega}$) into the PR condition yields the system:
           \[
-            \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) + \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 2,
+            \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) + \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 1,
           \]
           \[
-            \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) - \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 0.
+            \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega)}\hat{u}_\ell(\omega) - \sum_{\ell=0}^s \overline{\hat{\tilde{u}}_\ell(\omega+\pi)}\hat{u}_\ell(\omega+\pi) = 1.
           \]
 
     \item \textbf{Solve System:} Adding and subtracting these equations gives condition (iv).
